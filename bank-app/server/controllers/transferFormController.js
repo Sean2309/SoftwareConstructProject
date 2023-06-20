@@ -2,6 +2,7 @@ const transferFormController = require('express').Router()
 const TransferForm = require('../models/transferForm');
 
 /* 
+  sample data format
   {
     "cardholderName": "keith",
     "membershipNo": "1021030213",
@@ -13,7 +14,8 @@ const TransferForm = require('../models/transferForm');
 
 // Easy debug GET
 transferFormController.get('/', async (request, response) => {
-  response.send("why are you here not supposed to GET");
+  const submittedForms = await TransferForm.find({});
+  response.json(submittedForms);
 });
 
 // Handle the POST request to create a new transfer form
