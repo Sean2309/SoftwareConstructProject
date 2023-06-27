@@ -6,6 +6,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const transferFormController = require('./controllers/transferFormController');
 
+
+
 const app = express();
 
 // connect to mongoDB cloud
@@ -18,8 +20,10 @@ app.use(cors());
 // for purpose of parsing incoming requests 
 app.use(express.json());
 
-// setup routes
+
+
 app.use('/api/transferFormSubmit', transferFormController)
+
 
 app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`);
