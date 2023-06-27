@@ -11,6 +11,9 @@ const Layout = () => {
                     <li>
                         <Link to="transferPage">transferPage</Link>
                     </li>
+                    <li>
+                        <Link to="Login">Login</Link>
+                    </li>
                 </ul>
 
             </nav>

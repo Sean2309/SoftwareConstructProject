@@ -6,6 +6,7 @@ import './App.css';
 import Layout from './views/Layout';
 import Home from './views/Home';
 import TransferPage from './views/TransferPage';
+import Login from './views/Login';
 
 function App() {
   return (
@@ -27,10 +28,12 @@ function App() {
     //
     <BrowserRouter>
       <Routes>
+        {/* Layout tab is always rendered */}
         <Route path="/" element={<Layout />}>
+          {/* variable rendering depending on route */}
           <Route index element={<Home />} />
           <Route path="transferPage" element={<TransferPage />} />
-
+          <Route path="Login" element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>
