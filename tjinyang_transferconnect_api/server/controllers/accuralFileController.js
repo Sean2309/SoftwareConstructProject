@@ -1,6 +1,5 @@
 const express = require('express');
 const fs = require('fs');
-const AccuralFile = require('../models/accuralFile'); 
 const accuralFileForm = require('../models/accuralFileForm');
 const accrualController = express.Router();
 
@@ -9,7 +8,8 @@ accrualController.get('/testaccurals', async (request, response) => {
   try {
     const article = await accuralFileForm.find().exec();
     console.log(article);
-
+    const document = await accuralFileForm.findById('649ab5e51a5df1ae7764e654').exec();
+    console.log(document);
     // // consolidate data into the CSV file format
     // let data = 'index,Member ID,Member first name,Member last name,Transfer date,Amount,Reference number,Partner code\n';
 

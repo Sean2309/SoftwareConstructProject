@@ -5,7 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const transferFormController = require('./controllers/transferFormController');
-const accuralFileFormController = require('./controllers/accuralFileFormController');
+const accuralFileController = require('./controllers/accuralFileController');
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use(express.json());
 
 // setup routes
 app.use('/api/transferFormSubmit', transferFormController)
-app.use('/api/accural_files', accuralFileFormController)
+app.use('/api/accural_files', accuralFileController)
 
 app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`);
