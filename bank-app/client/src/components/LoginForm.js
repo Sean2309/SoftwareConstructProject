@@ -1,4 +1,6 @@
-class TransferForm extends Component {
+
+// todo: figure out whose login is this, the user bank account? or the user to marketplace?
+class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -97,4 +99,4 @@ class TransferForm extends Component {
     }
 }
 
-export default TransferForm;
+export default LoginForm;
