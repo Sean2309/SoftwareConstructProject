@@ -11,6 +11,6 @@ const accuralFileFormSchema = new mongoose.Schema({
   partnerCode: String
 });
 
-const accuralFileForm = mongoose.model('testaccurals', accuralFileFormSchema);
+const accuralFileForm = mongoose.model('testaccruals', accuralFileFormSchema)``;
 
 module.exports = accuralFileForm;
