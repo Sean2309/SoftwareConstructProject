@@ -7,6 +7,7 @@ import Layout from './views/Layout';
 import Home from './views/Home';
 import TransferPage from './views/TransferPage';
 import Login from './views/Login';
+import RewardCenter from './views/RewardCenter';
 
 function App() {
   return (
@@ -29,11 +30,13 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Layout tab is always rendered */}
+        {/* this is the bullet point direct linked text */}
         <Route path="/" element={<Layout />}>
           {/* variable rendering depending on route */}
           <Route index element={<Home />} />
           <Route path="transferPage" element={<TransferPage />} />
           <Route path="Login" element={<Login />} />
+          <Route path="rewardCenter" element={<RewardCenter/>} />
         </Route>
       </Routes>
     </BrowserRouter>
