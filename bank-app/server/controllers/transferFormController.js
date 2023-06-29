@@ -22,9 +22,6 @@ class TransferFormController {
     const transferFormData = request.body;
 
     const transferForm = new TransferForm(transferFormData);
-    
-    // TOOD: generate ReferenceNumber to tag to transferForm
-    // TODO: tag PartnerCode to transferForm
 
     transferForm.save()
       .then(() => {
@@ -35,6 +32,13 @@ class TransferFormController {
         console.error('Error saving transfer form data:', error);
         response.sendStatus(500);
       });
+    
+
+    // TODO: send axios POST to TransferConnect API 
+    // TODO: receive referenceNumber as response
+    // TODO: delete localdb entry if POST request fails
+    // axios.post...
+
     }
 
 };
