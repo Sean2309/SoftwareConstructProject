@@ -6,7 +6,6 @@ const transferFormSchema = new mongoose.Schema({
   transferDate: String,
   transferAmount: Number,
   referenceNumber: String,
-  partnerCode: String,
 });
 
 const TransferForm = mongoose.model('TransferForm', transferFormSchema);
