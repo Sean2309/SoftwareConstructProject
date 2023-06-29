@@ -1,4 +1,6 @@
 const TransferForm = require('../models/transferForm');
+const { TRANSFER_CONNECT_API_URL } = require('../utils/config');
+const axios = require('axios');
 
 /* 
   sample data format
@@ -10,36 +12,53 @@ const TransferForm = require('../models/transferForm');
   }
 
 */
-  
+
 class TransferFormController {
-  
-  async getAllForms(request, response) {
+
+  // to route to transferConnect transaction submission API endpoint
+  constructor() {
+    this.submissionRoute = TRANSFER_CONNECT_API_URL + '/api/transactions';
+    console.log(TRANSFER_CONNECT_API_URL);
+  }
+
+  // this function posts transaction details to TransferConnect transaction submission API endpoint
+  postTransaction = async (transactionData) => {
+    const response = await axios.post(this.submissionRoute, transactionData);
+    return response.data;
+  }
+
+  // get handler for easy debugging
+  getAllForms = async (request, response) => {
     const submittedForms = await TransferForm.find({});
     response.json(submittedForms);
   }
   
-  async submitTransferForm(request, response) {
-    const transferFormData = request.body;
+  // submit to TransferConnect app, then save to db
+  submitTransferForm = async (request, response) => {
+    try {
+      const transferFormData = request.body;
 
-    const transferForm = new TransferForm(transferFormData);
+      const postTransactionResponse = await this.postTransaction(transferFormData);
+      
+      transferFormData.referenceNumber = postTransactionResponse.referenceNumber;
 
-    transferForm.save()
-      .then(() => {
-        console.log('Transfer form data saved to MongoDB');
-        response.sendStatus(201);
-      })
-      .catch((error) => {
-        console.error('Error saving transfer form data:', error);
-        response.sendStatus(500);
-      });
-    
+      const transferForm = new TransferForm(transferFormData);
 
-    // TODO: send axios POST to TransferConnect API 
-    // TODO: receive referenceNumber as response
-    // TODO: delete localdb entry if POST request fails
-    // axios.post...
+      console.log('Transaction submitted to TransferConnect');
+      console.log(transferForm, transferForm.referenceNumber);
 
+      transferForm.save()
+        .then(() => {
+          console.log('Transaction data saved to MongoDB');
+          response.sendStatus(201);
+        });
+
+    } catch (error) {
+      // TODO: appropriate error handling for when POST to TransferConnect fails and when .save() to db fails
+      console.error(error);
     }
+
+  }
 
 };
 
