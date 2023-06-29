@@ -6,14 +6,14 @@ const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csvWriter = createCsvWriter({
   path: 'out.csv',
   header: [
-    {id: 'index', title: 'INDEX'},
-    {id: 'memberID', title: 'MEMBER_ID'},
-    {id: 'memberFirstName', title: 'MEMBER_FIRST_NAME'},
-    {id: 'memberLastName', title: 'MEMBER_LAST_NAME'},
-    {id: 'transferDate', title: 'TRANSFER_DATE'},
-    {id: 'amount', title: 'AMOUNT'},
-    {id: 'referenceNumber', title: 'REFERENCE_NUMBER'},
-    {id: 'partnerCode', title: 'PARTNER_CODE'}
+    {id: 'index', title: 'Index'},
+    {id: 'memberID', title: 'Member ID'},
+    {id: 'memberFirstName', title: 'Member first name'},
+    {id: 'memberLastName', title: 'Member last name'},
+    {id: 'transferDate', title: 'Transfer date'},
+    {id: 'amount', title: 'Amount'},
+    {id: 'referenceNumber', title: 'Reference number'},
+    {id: 'partnerCode', title: 'Partner code'}
   ]
 });
 
@@ -21,7 +21,7 @@ const retrieveAndWriteToCsv = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    const data = await AccrualFileForm.find().exec();
+    const data = await AccrualFileForm.find();
 
     console.log('Data retrieved:', data);
 
@@ -36,3 +36,4 @@ const retrieveAndWriteToCsv = async () => {
 };
 
 retrieveAndWriteToCsv();
+
