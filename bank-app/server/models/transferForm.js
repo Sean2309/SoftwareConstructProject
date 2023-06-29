@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 
 const transferFormSchema = new mongoose.Schema({
-  cardholderName: String,
-  membershipNo: String,
-  transferAmount: Number
+  membershipId: String,
+  membershipName: String,
+  transferDate: String,
+  transferAmount: Number,
+  referenceNumber: String,
+  partnerCode: String,
 });
 
 const TransferForm = mongoose.model('TransferForm', transferFormSchema);
