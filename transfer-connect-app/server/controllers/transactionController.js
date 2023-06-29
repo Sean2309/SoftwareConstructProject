@@ -35,20 +35,18 @@ class TransactionController {
   submitTransaction = async (request, response) => {
     const transactionData = request.body;
     
-    console.log(transactionData);
 
     transactionData.referenceNumber = this.generateReferenceNumber();
 
     transactionData.partnerCode = this.getPartnerCode();
-    
-    console.log(transactionData);
 
     const transaction = new Transaction(transactionData);
 
     transaction.save()
       .then(() => {
         console.log('Transfer form data saved to MongoDB');
-        response.sendStatus(201);
+        // send referenceNumber to bank app
+        response.status(201).json({ referenceNumber: transaction.referenceNumber });
       })
       .catch((error) => {
         console.error('Error saving transfer form data:', error);
