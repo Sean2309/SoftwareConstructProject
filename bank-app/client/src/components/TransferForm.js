@@ -12,6 +12,7 @@ class TransferForm extends Component {
         };
     }
     
+    // To return the current Date as a string
     getDate = () => {
         const currentDate = new Date();
 
@@ -21,19 +22,27 @@ class TransferForm extends Component {
         // To keep only the date portion
         return currentDate.toISOString().split('T')[0];
     };
+    
+    
+    // Returns true if membershipId is of correct format
+    membershipValidation = (membershipId) => {
+        // TODO 
+        // Grab validation format from DB (After LoyaltyProgramQuery API is implemented)
+        return true;
+    };
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const { membershipId, memberName, membershipIdConfirmation, amount } = this.state;
+        const { membershipId, memberName, membershipIdConfirmation, transferAmount } = this.state;
 
         const transferDate = this.getDate();
 
-        if (membershipId === membershipIdConfirmation) {
+        if (membershipId === membershipIdConfirmation && this.membershipValidation(membershipId)) {
             const form = {
                 membershipId,
                 memberName,
                 transferDate,
-                amount
+                transferAmount
             };
             
             console.log(form);
@@ -48,7 +57,7 @@ class TransferForm extends Component {
                 });
         }
         else {
-            // TODO
+            // TODO if the membershipId is not valid or not of confirmation
             return;
         }
     }
@@ -64,7 +73,7 @@ class TransferForm extends Component {
         return (
             <div>
                 <form onSubmit={this.handleSubmit}>
-                    <label htmlFor="memberName">PRiMARY CARDHOLDER</label>
+                    <label htmlFor="memberName">PRIMARY CARDHOLDER</label>
                     <input
                         type="text"
                         id="memberName"
