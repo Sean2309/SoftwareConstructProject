@@ -1,30 +1,38 @@
-const express = require('express');
-const fs = require('fs');
-const accrualFileForm = require('../models/accrualFileForm');
-const accrualController = express.Router();
+require('dotenv').config({path: __dirname + '/../.env'});
+const mongoose = require('mongoose');
+const AccrualFileForm = require('../models/accrualFileForm');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-// get data from db, consolidate, and save to AccuralFile
-accrualController.get('/testaccruals', async (request, response) => {
-  try {
-    const article = await accrualFileForm.find().exec();
-    console.log(article);
-    const document = await accrualFileForm.findById('649ab5e51a5df1ae7764e654').exec();
-    console.log(document);
-    // // consolidate data into the CSV file format
-    // let data = 'index,Member ID,Member first name,Member last name,Transfer date,Amount,Reference number,Partner code\n';
-
-    // // write the data into a CSV file
-    // const filename = `AL_ACCRUAL_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.txt`;
-    // fs.writeFileSync(filename, data);
-
-    // const accuralFile = new AccuralFile({ filename, data });
-    // await accuralFile.save();
-
-    response.send('Data has been retrieved, consolidated, and saved to MongoDB successfully.');
-  } catch (error) {
-    console.error('Error:', error);
-    response.status(500).send('Error occurred while processing data.');
-  }
+const csvWriter = createCsvWriter({
+  path: 'out.csv',
+  header: [
+    {id: 'index', title: 'INDEX'},
+    {id: 'memberID', title: 'MEMBER_ID'},
+    {id: 'memberFirstName', title: 'MEMBER_FIRST_NAME'},
+    {id: 'memberLastName', title: 'MEMBER_LAST_NAME'},
+    {id: 'transferDate', title: 'TRANSFER_DATE'},
+    {id: 'amount', title: 'AMOUNT'},
+    {id: 'referenceNumber', title: 'REFERENCE_NUMBER'},
+    {id: 'partnerCode', title: 'PARTNER_CODE'}
+  ]
 });
 
-module.exports = accrualController;
+const retrieveAndWriteToCsv = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+
+    const data = await AccrualFileForm.find().exec();
+
+    console.log('Data retrieved:', data);
+
+    await csvWriter.writeRecords(data);
+
+    console.log('Data written to out.csv.');
+
+    mongoose.connection.close();
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
+retrieveAndWriteToCsv();
