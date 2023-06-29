@@ -1,39 +1,44 @@
-const transferFormController = require('express').Router()
 const TransferForm = require('../models/transferForm');
 
 /* 
   sample data format
   {
-    "cardholderName": "keith",
-    "membershipNo": "1021030213",
+    "membershipId": "1021030213",
+    "memberName": "keith low",
+    "transferDate", "23-10-2000"
     "transferAmount": "2000"    
   }
 
 */
+  
+class TransferFormController {
+  
+  async getAllForms(request, response) {
+    const submittedForms = await TransferForm.find({});
+    response.json(submittedForms);
+  }
+  
+  async submitTransferForm(request, response) {
+    const transferFormData = request.body;
 
+    const transferForm = new TransferForm(transferFormData);
+    
+    // TOOD: generate ReferenceNumber to tag to transferForm
+    // TODO: tag PartnerCode to transferForm
 
-// Easy debug GET
-transferFormController.get('/', async (request, response) => {
-  const submittedForms = await TransferForm.find({});
-  response.json(submittedForms);
-});
+    transferForm.save()
+      .then(() => {
+        console.log('Transfer form data saved to MongoDB');
+        response.sendStatus(201);
+      })
+      .catch((error) => {
+        console.error('Error saving transfer form data:', error);
+        response.sendStatus(500);
+      });
+    }
 
-// Handle the POST request to create a new transfer form
-transferFormController.post('/', async (request, response) => {
-  const transferFormData = request.body;
+};
 
-  const transferForm = new TransferForm(transferFormData);
-
-  transferForm.save()
-    .then(() => {
-      console.log('Transfer form data saved to MongoDB');
-      response.sendStatus(201);
-    })
-    .catch((error) => {
-      console.error('Error saving transfer form data:', error);
-      response.sendStatus(500);
-    });
-
-});
+const transferFormController = new TransferFormController();
 
 module.exports = transferFormController;
