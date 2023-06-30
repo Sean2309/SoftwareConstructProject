@@ -1,5 +1,3 @@
-const express = require('express');
-const loyaltyProgramQueryController = express.Router();
 const loyaltyProgramQueryModel = require('../models/loyaltyProgramQueryModel');
 
 /* 
@@ -12,41 +10,42 @@ const loyaltyProgramQueryModel = require('../models/loyaltyProgramQueryModel');
   description: "YOL"
   enrollmentLink: "https://www.gojet.com/member/"
   tncLink: "https://www.gojet.com/aa/about-us/en/gb/terms-and-conditions.html"
+  format: "9digits1letter"
   }
 
 */
+class LoyaltyProgramQueryController {
+  getLoyaltyPrograms = async (request, response) => {
+    try {
+      const data = await loyaltyProgramQueryModel.find({});
 
-loyaltyProgramQueryController.get('/LPPdata', async(req,res) => {
-  try {
-    const data = await loyaltyProgramQueryModel.find({});
+      // Transform the data before sending the response
+      const transformedData = data.map(document => {
+        const transformedDocument = { ...document._doc };
+        transformedDocument.id = transformedDocument._id.toString();
+        delete transformedDocument._id;
+        delete transformedDocument.__v;
+        delete transformedDocument.id;
+        return transformedDocument;
+      });
 
-     // Transform the data before sending the response
-     const transformedData = data.map(document => {
-      const transformedDocument = { ...document._doc };
-      transformedDocument.id = transformedDocument._id.toString();
-      delete transformedDocument._id;
-      delete transformedDocument.__v;
-      delete transformedDocument.id;
-      return transformedDocument;
-    });
-    
-    console.log(transformedData); // Output transformed data to the terminal
-    res.status(200).json(transformedData); // convert 'transformedData' to JSON string and send as the response body , along with HTTP status 
+      console.log(transformedData); // Output transformed data to the terminal
+      response.status(200).json(transformedData); // convert 'transformedData' to JSON string and send as the response body , along with HTTP status 
 
-}
-  catch (error){
-    res.status(500).json({message:error.message})
+    }
+    catch (error) {
+      response.status(500).json({ message: error.message })
+    }
   }
-})
+}
+
+const loyaltyProgramQueryController = new LoyaltyProgramQueryController();
+
 
 module.exports = loyaltyProgramQueryController;
 
-
-
-
-
-// -------------------- ADDITION TO DB ------------ // 
-// Insert new LoyaltyProgramProvider into Db 
+// -------------------- ADDITION TO DB ------------ //
+// Insert new LoyaltyProgramProvider into Db
 // createLoyaltyProgramProvider = async (request, response) => {
 
 //   try {
@@ -68,7 +67,7 @@ module.exports = loyaltyProgramQueryController;
 
 //     //Succesful update
 //     console.log(`Loyalty Program Provider successfully added to Db`)
-//     res.sendStatus(201); 
+//     res.sendStatus(201);
 //     provider.mongoose.connection.close()
 
 //   } catch (error) {
