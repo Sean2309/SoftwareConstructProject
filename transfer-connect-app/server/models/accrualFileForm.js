@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const accrualFileFormSchema = new mongoose.Schema({
@@ -11,6 +12,6 @@ const accrualFileFormSchema = new mongoose.Schema({
   partnerCode: String
 });
 
-const accrualFileForm = mongoose.model('testaccruals', accrualFileFormSchema);
+const accrualFileForm = mongoose.model('testaccrual', accrualFileFormSchema);
 
 module.exports = accrualFileForm;
