@@ -2,6 +2,9 @@ require('dotenv').config({path: __dirname + '/../.env'});
 const mongoose = require('mongoose');
 const AccrualFileForm = require('../models/accrualFileForm');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const Files = require('files.com/lib/Files').default;
+const File = require('files.com/lib/models/File').default;
+const { isBrowser } = require('files.com/lib/utils');
 
 const csvWriter = createCsvWriter({
   path: 'out.csv',
@@ -37,3 +40,23 @@ const retrieveAndWriteToCsv = async () => {
 
 retrieveAndWriteToCsv();
 
+const uploadFileToServer = async () => {
+  Files.setBaseUrl('https://kaligo.files.com');
+  Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
+  if (!isBrowser()) {
+    await File.uploadFile('/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_20200812.txt', 'out.csv');
+    console.log('File uploaded successfully.');
+  } else {
+    console.log('File upload skipped because it is running in a browser environment.');
+  }
+}
+// const uploadFileToServer = async () => {
+//   const file = await File.uploadFile('AL_ACCRUAL_20200812.txt', 'out.csv')
+// }
+uploadFileToServer();
+
+const queryFromDBandUpload = async () =>{
+  createCsvWriter();
+  await retrieveAndWriteToCsv();
+  await uploadFileToServer();
+}

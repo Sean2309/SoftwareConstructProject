@@ -1,2 +1,2 @@
-INDEX,MEMBER_ID,MEMBER_FIRST_NAME,MEMBER_LAST_NAME,TRANSFER_DATE,AMOUNT,REFERENCE_NUMBER,PARTNER_CODE
-
+Index,Member ID,Member first name,Member last name,Transfer date,Amount,Reference number,Partner code
+2,12345abc,John,Doe,Tue Feb 18 2020 08:00:00 GMT+0800 (Singapore Standard Time),10000,123213213a,DBSSG
