@@ -3,6 +3,22 @@ const mongoose = require('mongoose');
 const AccrualFileForm = require('../models/accrualFileForm');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
+/*
+TODO:
+We have an array of collections, each collection is pointing to 1 loyalty program,
+const collections = ["QFlyer", "Gojet", ...]
+
+So for each collection, .find() all the transactions for that loyalty program, 
+consolidate and then upload to sftp server
+
+Do maybe like a loop?
+
+for (loyaltyProgram of collections) {
+  retrieveAndWriteToCsv(loyaltyProgram);
+}
+*/
+
+
 const csvWriter = createCsvWriter({
   path: 'out.csv',
   header: [
