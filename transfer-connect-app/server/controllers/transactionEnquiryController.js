@@ -11,7 +11,7 @@ async function getOutcomeCode(id_list){
       .then(user => {
         if (user) {
           console.log('Found transactions:', user);
-          outcomes.push(user);
+          outcomeCodes.push(user);
 
         } else {
           console.log('Transactions not found');
@@ -27,9 +27,9 @@ async function getOutcomeCode(id_list){
 async function submitTransaction(){
     const transactionData = {
       "Reference number": "0000",
-      "Transfer date": "1111",
+      "Transfer date": new Date(),
       "Outcome code": "0001",
-      "Amount": "1000",
+      "Amount": 1000,
       };
   
     const transaction1 = new handback(transactionData);

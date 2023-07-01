@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 //edit fields according to handback file 
 const transaction = new Schema({
   "Reference number": String,
-  "Transfer date": String,
+  "Transfer date": Date,
   "Outcome code": String,
-  "Amount": String,
+  "Amount": Number,
 })
 
 const handback = mongoose.model('handback', transaction, 'handback');

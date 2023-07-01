@@ -2,8 +2,8 @@ const { default: mongoose } = require('mongoose');
 const Schema = mongoose.Schema;
 
 const transaction = new Schema({
-  "Reference number": String,
-  "Transfer date": String,
+  "Reference number": Date,
+  "Transfer date": Int32,
   "Outcome code": String,
   "Amount": String,
 })

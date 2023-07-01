@@ -28,22 +28,6 @@ function stopInterval() {
     
 
 
-
-async function getStatus(id_list){
-  for (let id of id_list){
-    await handback.find({"Reference number": id}, {"Outcome code": 1, "Reference number": 1})
-    .then(user => {
-      if (user) {
-        console.log('Found user:', user);
-      } else {
-        console.log('User not found');
-      }
-    })
-    .catch(error => {
-      console.error('Error finding user:', error);
-    });}
-}
-
 //add transaction (for testing)
 submitTransaction = async (request, response) => {
   const transactionData = {
