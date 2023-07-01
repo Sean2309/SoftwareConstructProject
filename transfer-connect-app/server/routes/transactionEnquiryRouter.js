@@ -18,6 +18,7 @@ router.get('/check/:referencenumber', async function(req, res, next) {
     console.log(id_list);
     const transactions = await transactionmodel.getOutcomeCode(id_list);
     res.send(transactions); 
+    return;
 });
 
 
