@@ -10,6 +10,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.13.0",
+<<<<<<< HEAD
+=======
+    "react-scripts": "5.0.1",
+>>>>>>> 31fde4fdfac46053a7b5371bfe36a0a9852f4368
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -35,8 +39,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+<<<<<<< HEAD
   },
   "devDependencies": {
     "react-scripts": "^5.0.1"
+=======
+>>>>>>> 31fde4fdfac46053a7b5371bfe36a0a9852f4368
   }
 }
