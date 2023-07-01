@@ -12,6 +12,4 @@ const accrualFileFormSchema = new mongoose.Schema({
   partnerCode: String
 });
 
-const accrualFileForm = mongoose.model('testaccrual', accrualFileFormSchema);
-
-module.exports = accrualFileForm;
+module.exports = accrualFileFormSchema;

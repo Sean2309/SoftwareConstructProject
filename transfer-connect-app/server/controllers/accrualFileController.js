@@ -1,6 +1,6 @@
 require('dotenv').config({path: __dirname + '/../.env'});
 const mongoose = require('mongoose');
-const AccrualFileForm = require('../models/accrualFileForm');
+const accrualFileFormSchema = require('../models/accrualFileForm');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const Files = require('files.com/lib/Files').default;
 const File = require('files.com/lib/models/File').default;
@@ -21,58 +21,68 @@ for (loyaltyProgram of collections) {
 }
 */
 
+const collections = ["qflyers", "gojets", "testaccruals"]; // note please name your collection name in lowercase and add a "s" at the end
 
-const csvWriter = createCsvWriter({
-  path: 'out.csv',
-  header: [
-    {id: 'index', title: 'Index'},
-    {id: 'memberID', title: 'Member ID'},
-    {id: 'memberFirstName', title: 'Member first name'},
-    {id: 'memberLastName', title: 'Member last name'},
-    {id: 'transferDate', title: 'Transfer date'},
-    {id: 'amount', title: 'Amount'},
-    {id: 'referenceNumber', title: 'Reference number'},
-    {id: 'partnerCode', title: 'Partner code'}
-  ]
-});
+const writeCollectionsToCsv = async () => {
+  mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
-const retrieveAndWriteToCsv = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+  for (const collection of collections) {
+    const Model = mongoose.model(collection, accrualFileFormSchema);
 
-    const data = await AccrualFileForm.find();
+    try {
+      const data = await Model.find();
 
-    console.log('Data retrieved:', data);
+      console.log('Data retrieved from ' + collection + ':', data);
 
-    await csvWriter.writeRecords(data);
+      const csvWriter = createCsvWriter({
+        path: `${collection}_out.csv`,
+        header: [
+          {id: 'index', title: 'Index'},
+          {id: 'memberID', title: 'Member ID'},
+          {id: 'memberFirstName', title: 'Member first name'},
+          {id: 'memberLastName', title: 'Member last name'},
+          {id: 'transferDate', title: 'Transfer date'},
+          {id: 'amount', title: 'Amount'},
+          {id: 'referenceNumber', title: 'Reference number'},
+          {id: 'partnerCode', title: 'Partner code'}
+        ]
+      });
 
-    console.log('Data written to out.csv.');
+      await csvWriter.writeRecords(data);
 
-    mongoose.connection.close();
-  } catch (error) {
-    console.error('An error occurred:', error);
+      console.log(`Data written to ${collection}_out.csv.`);
+    } catch (error) {
+      console.error('An error occurred while handling collection ' + collection + ':', error);
+    }
   }
-};
 
-retrieveAndWriteToCsv();
+  mongoose.connection.close();
+}
 
-const uploadFileToServer = async () => {
+writeCollectionsToCsv();
+
+const uploadFilesToServer = async () => {
   Files.setBaseUrl('https://kaligo.files.com');
   Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
-  if (!isBrowser()) {
-    await File.uploadFile('/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_20200812.txt', 'out.csv');
-    console.log('File uploaded successfully.');
-  } else {
-    console.log('File upload skipped because it is running in a browser environment.');
+
+  for (const collection of collections) {
+    if (!isBrowser()) {
+      try {
+        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_${collection}_20200812.txt`, `${collection}_out.csv`);
+        console.log('File uploaded successfully.');
+      } catch (error) {
+        console.error('An error occurred while uploading file for collection ' + collection + ':', error);
+      }
+    } else {
+      console.log('File upload skipped because it is running in a browser environment.');
+    }
   }
 }
-// const uploadFileToServer = async () => {
-//   const file = await File.uploadFile('AL_ACCRUAL_20200812.txt', 'out.csv')
-// }
-uploadFileToServer();
 
-const queryFromDBandUpload = async () =>{
-  createCsvWriter();
-  await retrieveAndWriteToCsv();
-  await uploadFileToServer();
-}
+uploadFilesToServer();
+
+// const queryFromDBandUpload = async () =>{
+//   createCsvWriter();
+//   await retrieveAndWriteToCsv();
+//   await uploadFileToServer();
+// }
