@@ -4,8 +4,7 @@ const config = require('./utils/config');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const transferFormController = require('./controllers/transferFormController');
-const loyaltyProgramsController = require('./controllers/loyaltyProgramsController');
+const loyaltyProgramsRouter = require('./routes/loyaltyProgramsRouter');
 
 const app = express();
 
@@ -20,10 +19,7 @@ app.use(cors());
 app.use(express.json());
 
 // setup routes
-app.use('/api/transferFormSubmit', transferFormController)
-
-app.use('/loyaltyPrograms', loyaltyProgramsController);
-  
+app.use('/api/loyaltyPrograms', loyaltyProgramsRouter);
 
 app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`);
