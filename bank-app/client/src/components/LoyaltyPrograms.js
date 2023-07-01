@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import LoyaltyProgram from './LoyaltyProgram';
 
 class LoyaltyPrograms extends Component {
     constructor(props) {
@@ -29,31 +30,13 @@ class LoyaltyPrograms extends Component {
                 {loyaltyProgramsData === undefined ? (
                     <p>Loading...</p>
                 ) : (
-                    loyaltyProgramsData.map((program, index) => (
-                        <div key={index} style={loyaltyProgramStyle}>
-                            <h3>{program.programName}</h3>
-                            <p>Description: {program.description}</p>
-                            <p>Currency: {program.currencyName}</p>
-                            <p>Processing Time: {program.processingTime}</p>
-                            <a href={program.enrollmentLink}>Enrollment Link</a>
-                            <br />
-                            <a href={program.tncLink}>Terms and Conditions</a>
-                        </div>
+                    loyaltyProgramsData.map((data, index) => (
+                        <LoyaltyProgram key={index} data={data} />
                     ))
                 )}
             </div>
         );
     }
 }
-
-// CSS style for the loyalty program box
-const loyaltyProgramStyle = {
-  border: '1px solid #ccc',
-  padding: '10px',
-  margin: '10px',
-  borderRadius: '5px',
-  backgroundColor: '#f9f9f9',
-};
-
 
 export default LoyaltyPrograms;
