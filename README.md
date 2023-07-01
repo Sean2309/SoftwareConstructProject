@@ -78,9 +78,9 @@ Database currently stores the handback file data in this format:
     "$oid": "649c7a77aa20c98e3f47baec"
   },
   "Transfer date": {
-    "$date": "2020-01-01T00:00:00.000Z"
+    "$date": "2020-01-01T00:00:00.000Z" //Date
   },
-  "Amount": 10000,
+  "Amount": 10000, //Number
   "Reference number": "0001",
   "Outcome code": "0001"
 }
