@@ -10,7 +10,7 @@ const app = express();
 
 // connect to mongoDB cloud
 mongoose.connect(config.MONGODB_URL,  {
-    dbName: 'transferconnect', // Specify the database name, edit this accordingly
+    dbName: 'bank-app', // Specify the database name, edit this accordingly
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }).then((res) => console.log('connected')).catch((err) => console.error('error'))

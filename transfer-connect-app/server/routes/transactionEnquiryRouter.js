@@ -10,6 +10,9 @@ router.get('/add', async function(req, res, next) {
 
 router.get('/check/:referencenumber', async function(req, res, next) {
     const id = req.params;
+    if (id == null){
+        return;
+    }
     console.log(id.referencenumber);
     const id_list = id.referencenumber.split(",");
     console.log(id_list);

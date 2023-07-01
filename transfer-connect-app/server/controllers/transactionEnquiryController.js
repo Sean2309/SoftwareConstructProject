@@ -6,21 +6,20 @@ const handback = require('../models/transactionEnquiryModel.js');
 //getStatus
 async function getOutcomeCode(id_list){
     let outcomeCodes = [];
-    for (let id of id_list){
-      await handback.find({"Reference number": id}, {"Outcome code": 1, "Reference number": 1})
-      .then(user => {
-        if (user) {
-          console.log('Found transactions:', user);
-          outcomeCodes.push(user);
+    await handback.find({"Reference number": id_list}, {"Outcome code": 1, "Reference number": 1, "_id":0})
+    .then(user => {
+      if (user) {
+        console.log('Found transactions:', user);
+        outcomeCodes = user;
 
-        } else {
-          console.log('Transactions not found');
-        }
-      })
-      .catch(error => {
-        console.error('Error finding transaction:', error);
-      });}
-      return outcomeCodes;
+      } else {
+        console.log('Transactions not found');
+      }
+    })
+    .catch(error => {
+      console.error('Error finding transaction:', error);
+    });
+    return outcomeCodes;
   }
 
 //add transaction (for testing)
