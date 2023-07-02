@@ -5,4 +5,4 @@ var job = new CronJob(
     '0 0 0 * * *',
     queryFromDBandUpload,
 );
-// job.start() - See note below when to use this
+// job.start() //- See note below when to use this

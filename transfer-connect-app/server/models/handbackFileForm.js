@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const handbackFileFormSchema = new mongoose.Schema({
@@ -7,6 +8,4 @@ const handbackFileFormSchema = new mongoose.Schema({
     outcomeCode: String
 });
 
-const handbackFileForm = mongoose.model('testhandbacks', handbackFileFormSchema);
-
-module.exports = handbackFileForm;
+module.exports = handbackFileFormSchema;

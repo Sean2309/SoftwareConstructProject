@@ -59,8 +59,6 @@ const writeCollectionsToCsv = async () => {
   mongoose.connection.close();
 }
 
-writeCollectionsToCsv();
-
 const uploadFilesToServer = async () => {
   Files.setBaseUrl('https://kaligo.files.com');
   Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
@@ -79,10 +77,16 @@ const uploadFilesToServer = async () => {
   }
 }
 
-uploadFilesToServer();
 
-// const queryFromDBandUpload = async () =>{
-//   createCsvWriter();
-//   await retrieveAndWriteToCsv();
-//   await uploadFileToServer();
-// }
+const main = async () => {
+  await writeCollectionsToCsv();
+  await uploadFilesToServer();
+};
+
+const queryFromDBandUpload = async () =>{
+  createCsvWriter();
+  await retrieveAndWriteToCsv();
+  await uploadFileToServer();
+}
+
+main().catch(console.error);
