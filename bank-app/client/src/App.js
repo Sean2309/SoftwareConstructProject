@@ -5,7 +5,6 @@ import './App.css';
 // import views
 import Layout from './views/Layout';
 import Home from './views/Home';
-import TransferPage from './views/TransferPage';
 import Marketplace from './views/Marketplace';
 
 function App() {
@@ -17,7 +16,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="transferPage" element={<TransferPage />} />
           <Route path="marketplace" element={<Marketplace />} />
         </Route>
       </Routes>

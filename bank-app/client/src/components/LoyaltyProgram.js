@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import TransferForm from './TransferForm';
 
 class LoyaltyProgram extends Component {
 
     render() {
         const { data } = this.props;
+
+        console.log(data);
 
         return (
             <div style={loyaltyProgramStyle}>
@@ -11,9 +14,15 @@ class LoyaltyProgram extends Component {
                 <p>Description: {data.description}</p>
                 <p>Currency: {data.currencyName}</p>
                 <p>Processing Time: {data.processingTime}</p>
-                <a href={data.enrollmentLink}>Enrollment Link</a>
-                <br />
-                <a href={data.tncLink}>Terms and Conditions</a>
+                <p>
+                    <a href={data.enrollmentLink}>Enrollment Link</a>
+                </p>
+                <p>
+                    <a href={data.tncLink}>Terms and Conditions</a>
+                </p>
+                <p>
+                    <TransferForm />
+                </p>
             </div>
         );
     }

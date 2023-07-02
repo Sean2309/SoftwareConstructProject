@@ -4,26 +4,35 @@ import axios from 'axios';
 class TransferForm extends Component {
     constructor(props) {
         super(props);
-            this.state = {
+        this.state = {
             membershipId: '',
             memberName: '',
             membershipIdConfirmation: '',
-            transferAmount: ''
+            transferAmount: '',
+            isOpen: false // to render form as popup
         };
     }
-    
+
+    openModal = () => {
+        this.setState({ isOpen: true });
+    }
+
+    closeModal = () => {
+        this.setState({ isOpen: false });
+    }
+
     // To return the current Date as a string
     getDate = () => {
         const currentDate = new Date();
 
         // To get date without time
         //currentDate.setHours(0, 0, 0, 0);
-        
+
         // To keep only the date portion
         return currentDate.toISOString().split('T')[0];
     };
-    
-    
+
+
     // Returns true if membershipId is of correct format
     membershipValidation = (membershipId) => {
         // TODO 
@@ -44,7 +53,7 @@ class TransferForm extends Component {
                 transferDate,
                 transferAmount
             };
-            
+
             console.log(form);
 
             axios.post('http://localhost:3001/api/transferFormSubmit', form)
@@ -67,57 +76,73 @@ class TransferForm extends Component {
         this.setState({ [name]: value });
     }
 
-    render() {
-        const { memberName, membershipId, membershipIdConfirmation, transferAmount } = this.state;
+    renderForm = () => {
+        const { memberName, membershipId, membershipIdConfirmation, transferAmount, isOpen } = this.state;
+        if (!isOpen) {
+            return <button onClick={this.openModal}>Transfer</button>
+
+        }
 
         return (
             <div>
-                <form onSubmit={this.handleSubmit}>
-                    <label htmlFor="memberName">PRIMARY CARDHOLDER</label>
-                    <input
-                        type="text"
-                        id="memberName"
-                        name="memberName"
-                        value={memberName}
-                        onChange={this.handleChange}
-                    />
-                    <br />
+                <dialog open={isOpen}>
+                    <form onSubmit={this.handleSubmit}>
+                        <label htmlFor="memberName">Primary Cardholder Name: </label>
+                        <input
+                            type="text"
+                            id="memberName"
+                            name="memberName"
+                            value={memberName}
+                            onChange={this.handleChange}
+                        />
+                        <br />
 
-                    <label htmlFor="membershipId">MEMBERSHIP #</label>
-                    <input
-                        type="text"
-                        id="membershipId"
-                        name="membershipId"
-                        value={membershipId}
-                        onChange={this.handleChange}
-                    />
-                    <br />
+                        <label htmlFor="membershipId">Membership ID: </label>
+                        <input
+                            type="text"
+                            id="membershipId"
+                            name="membershipId"
+                            value={membershipId}
+                            onChange={this.handleChange}
+                        />
+                        <br />
 
-                    <label htmlFor="membershipIdConfirmation">CONFIRM MEMBERSHIP #</label>
-                    <input
-                        type="text"
-                        id="membershipIdConfirmation"
-                        name="membershipIdConfirmation"
-                        value={membershipIdConfirmation}
-                        onChange={this.handleChange}
-                    />
-                    <br />
+                        <label htmlFor="membershipIdConfirmation">Confirm Membership ID: </label>
+                        <input
+                            type="text"
+                            id="membershipIdConfirmation"
+                            name="membershipIdConfirmation"
+                            value={membershipIdConfirmation}
+                            onChange={this.handleChange}
+                        />
+                        <br />
 
-                    <label htmlFor="transferAmount">TRANSFER AMOUNT</label>
-                    <input
-                        type="text"
-                        id="transferAmount"
-                        name="transferAmount"
-                        value={transferAmount}
-                        onChange={this.handleChange}
-                    />
-                    <br />
+                        <label htmlFor="transferAmount">Transfer Amount: </label>
+                        <input
+                            type="text"
+                            id="transferAmount"
+                            name="transferAmount"
+                            value={transferAmount}
+                            onChange={this.handleChange}
+                        />
+                        <br />
 
-                    <input
-                        type="submit"
-                        value="Submit"
-                    />
-                </form>
+                        <input
+                            type="submit"
+                            value="Submit"
+                        />
+                    </form>
+                    <button onClick={this.closeModal}>Close</button>
+                </dialog>
+            </div>
+
+        );
+    }
+
+    render() {
+        return (
+            <div>
+                <this.renderForm />
             </div>
         );
     }
