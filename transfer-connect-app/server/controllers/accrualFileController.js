@@ -5,6 +5,8 @@ const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const Files = require('files.com/lib/Files').default;
 const File = require('files.com/lib/models/File').default;
 const { isBrowser } = require('files.com/lib/utils');
+const path = require('path');
+const fs = require('fs');
 
 /*
 TODO:
@@ -21,6 +23,10 @@ for (loyaltyProgram of collections) {
 }
 */
 
+if (!fs.existsSync('accrual_files')) {
+  fs.mkdirSync('accrual_files');
+}
+
 const collections = ["qflyers", "gojets", "testaccruals"]; // note please name your collection name in lowercase and add a "s" at the end
 
 const writeCollectionsToCsv = async () => {
@@ -35,14 +41,12 @@ const writeCollectionsToCsv = async () => {
       console.log('Data retrieved from ' + collection + ':', data);
 
       const csvWriter = createCsvWriter({
-        path: `${collection}_out.csv`,
+        path: path.join('accrual_files',`${collection}_out.csv`),
         header: [
-          {id: 'index', title: 'Index'},
-          {id: 'memberID', title: 'Member ID'},
-          {id: 'memberFirstName', title: 'Member first name'},
-          {id: 'memberLastName', title: 'Member last name'},
+          {id: 'membershipId', title: 'Membership ID'},
+          {id: 'membershipName', title: 'Membership name'},
           {id: 'transferDate', title: 'Transfer date'},
-          {id: 'amount', title: 'Amount'},
+          {id: 'transferAmount', title: 'Transfer Amount'},
           {id: 'referenceNumber', title: 'Reference number'},
           {id: 'partnerCode', title: 'Partner code'}
         ]
@@ -66,7 +70,7 @@ const uploadFilesToServer = async () => {
   for (const collection of collections) {
     if (!isBrowser()) {
       try {
-        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_${collection}_20200812.txt`, `${collection}_out.csv`);
+        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_${collection}_20200812.txt`, path.join('accrual_files', `${collection}_out.csv`));
         console.log('File uploaded successfully.');
       } catch (error) {
         console.error('An error occurred while uploading file for collection ' + collection + ':', error);
