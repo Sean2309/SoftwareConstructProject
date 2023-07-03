@@ -9,7 +9,8 @@ const loyaltyProgramQuerySchema = new mongoose.Schema({
   processingTime: String,
   description: String,
   enrollmentLink: String,
-  tncLink: String
+  tncLink: String,
+  membershipFormat: String
 },{ collection: 'loyaltyProgramProviders' });
 //{collection:`loyaltyProgramQueryModel` } 
 
