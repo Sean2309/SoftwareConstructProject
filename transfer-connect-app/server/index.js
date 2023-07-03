@@ -9,11 +9,10 @@ const transferconnectController = require('./routes/transactionEnquiryRouter');
 const app = express();
 
 // connect to mongoDB cloud
-mongoose.connect(config.MONGODB_URL,  {
-    dbName: 'transferconnect', // Specify the database name, edit this accordingly
+mongoose.connect(config.MONGODB_URL,  { 
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  }).then((res) => console.log('connected')).catch((err) => console.error('error'))
+  }).then((res) => console.log('connected')).catch((err) => console.log(err))
 
 
 // enable CORS for all routes
@@ -24,7 +23,7 @@ app.use(cors());
 app.use(express.json());
 
 // setup routes
-app.use('/transferconnect', transferconnectController)
+app.use('/transferconnect', transferconnectController.router)
 
 app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`);

@@ -3,25 +3,23 @@ const transactionmodel = require('../controllers/transactionEnquiryController.js
 var router = express.Router();
 
 //for testing purposes only
-router.get('/add', async function(req, res, next) {
-    transactionmodel.submitTransaction(req, res);
+router.get('/add/:bank_app/:loyalty_program', async function(req, res, next) {
+    transactionmodel.processRouteAdd(req);
 });
 
 
-router.get('/check/:referencenumber', async function(req, res, next) {
+router.get('/check/:bank_app/:loyalty_program/:referencenumber', async function(req, res, next) {
     const id = req.params;
-    if (id == null){
-        return;
-    }
-    console.log(id.referencenumber);
-    const id_list = id.referencenumber.split(",");
-    console.log(id_list);
-    const transactions = await transactionmodel.getOutcomeCode(id_list);
-    res.send(transactions); 
-    return;
+  if (id == null){
+      return;
+  }
+  console.log(id.loyalty_program);
+  console.log(id.bank_app);
+  console.log(id.referencenumber);
+    transactionmodel.processRoute(req, res);
 });
 
 
-module.exports = router;
+module.exports = {router};
 
 
