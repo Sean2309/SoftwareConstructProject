@@ -3,14 +3,9 @@
 // GET Requests: Retrieving data from the server
 
 // TODO
-// How the Handback File Works:
-// 1. Receives reminder daily using CronJob to run the handback file controller
-// 2. retrieveFromServer(): Retrieve the data from the transfer connect db => filters based on the outcome code
-  // for each collection (i.e loyalty program) => extract the accrual file
-// 3. consolidateInfo(): generates confirmedTransactions -> List of confirmed transactions for the day
-// 4. responseToGet(): converts the confirmedTransactions list into a JSON 
-// sample file naming for csv: {PARTNER_CODE}_HANDBACK_{CURRENT_DATE}.txt (e.g. “AL_HANDBACK_20200812.txt”) 
-// 5. 
+// 1. Downlaod handback file from SFTP server: Handback/<LP>/... .csv
+// 2. Iterate through every LP
+// 3. 
 
 // Importing files/modules
 require('dotenv').config({path: __dirname + '/../.env'});
@@ -21,7 +16,7 @@ const Files = require('files.com/lib/Files').default;
 const File = require('files.com/lib/models/File').default;
 const { isBrowser } = require('files.com/lib/utils');
 
-// // Datetime
+// Datetime
 function getDate(date) {
   const day = date.getDate(); // Get the day (1-31)
   const month = date.getMonth() + 1; // Get the month (0-11), add 1 to match the human-readable month (1-12)
@@ -29,49 +24,33 @@ function getDate(date) {
   const date_out = `${year}${month}${day}`;
   return date_out;
 }
-// // Getting Current Date
+// Getting Current Date
 const currentDate = getDate(new Date());
-console.log(`Current Date : ${currentDate}`);
 
 // Define Collections
 const collections = [`handback_test1`];
-
-// TODO
-// Workflow:
-1. 
-
-
+const mongo_lp_list = [`dbssgs`, `qflyers`, `gojets`];
 
 const retrieveFromServer = async() => {
 
-  const transactionSchema = new mongoose.Schema({
-    membershipId: String,
-    membershipName: String,
-    transferDate: String,
-    transferAmount: Number,
-    referenceNumber: String,
-    partnerCode: String,
-    outcomeCode: String
-  });
+  const sftp_lp_list = ['DBSSG', `QFlyers`, `GoJets`];
+  
+  const sftp_test_date = `20200812`;
 
-  const lp_list = [`DBSSG`];
-  const date1 = `20200812`;
-
-  for (const lp of lp_list ) {
+  for (const lp of sftp_lp_list ) {
     Files.setBaseUrl('https://kaligo.files.com');
     Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
-      const filePath = `/transfer_connect_sutd_case_study_2023/c4i1/Handback/${lp}/${lp}_HANDBACK_${date1}.csv`
-      console.log(filePath);
-      const foundFile = await File.find(filePath);
-      const downloadableFile = await foundFile.download();
-
-      // for (const collection of collections) {
-      if (!isBrowser()) {
-        // download to a file on disk
-        await downloadableFile.downloadToFile(`./out/test_out.csv`);
-      }
-    // };
+    const fileName = `${lp}_HANDBACK_${sftp_test_date}.csv`;
+    
+    const foundFile = await File.find(`/transfer_connect_sutd_case_study_2023/c4i1/Handback/${lp}/${fileName}`);
+    const downloadableFile = await foundFile.download();
+{
+    if (!isBrowser()) {
+      // download to a file on disk
+      await downloadableFile.downloadToFile(`./sftp_handback_downloads/${fileName}`);
+    }
   }
+};
     
   
   // const csvWriter = createCsvWriter({
