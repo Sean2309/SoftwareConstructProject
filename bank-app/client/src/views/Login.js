@@ -54,10 +54,11 @@ class Login extends Component {
                         
                     </div> */}
 
-                    <h1>Login Page</h1>
-                    <div className="form-box">
+                    <div className="login-form">
                         <LoginPage/>
                     </div>
+                    
+
                         
                     {/* <div className="Rectangle">
                         <Link to="/">
