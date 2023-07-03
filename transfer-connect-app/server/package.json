@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1407.0",
+    "aws-sdk": "^2.1409.0",
     "axios": "^1.4.0",
     "cors": "^2.8.5",
     "cron": "^2.3.1",
@@ -24,6 +24,6 @@
     "ssh2-sftp-client": "^9.1.0"
   },
   "devDependencies": {
-    "files.com": "^1.0.287"
+    "files.com": "^1.0.291"
   }
 }

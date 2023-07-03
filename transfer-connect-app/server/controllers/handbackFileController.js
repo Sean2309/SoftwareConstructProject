@@ -13,18 +13,14 @@
 // sample file naming for csv: {PARTNER_CODE}_HANDBACK_{CURRENT_DATE}.txt (e.g. “AL_HANDBACK_20200812.txt”) 
 // 5. 
 
-// Config Details for Mongo DB Connection
-require("dotenv").config({path: __dirname} + "/../.env");
-
 // Importing files/modules
-const mongoose = require("mongoose");
+require('dotenv').config({path: __dirname + '/../.env'});
 const handbackFileFormSchema = require('../models/handbackFileForm');
+const mongoose = require('mongoose');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const Files = require('files.com/lib/Files').default;
 const File = require('files.com/lib/models/File').default;
 const { isBrowser } = require('files.com/lib/utils');
-
-
 
 // Datetime
 const date = new Date();
@@ -34,43 +30,67 @@ const year = date.getFullYear(); // Get the four-digit year
 const currentDate = `${day}_${month}_${year}`;
 
 // FOR TESTING PURPOSES: CONNECTING TO PERSONAL MONGODB
-const username = encodeURIComponent("seanphay");
-const password = encodeURIComponent("ben10ben");
-const uri = `mongodb+srv://${username}:${password}@handback.ml78h2m.mongodb.net/handback`;
+// const username = encodeURIComponent("seanphay");
+// const password = encodeURIComponent("ben10ben");
+// const uri = `mongodb+srv://${username}:${password}@handback.ml78h2m.mongodb.net/handback`;
+// const uri = "mongodb+srv://tengtjinyang:zagNwPsta2HHTyfE@transferconnect.0papjri.mongodb.net/TransferConnectDB";
+
+
 const collections = [`handbackfiles`,`handback_test1`, `handback_test2`];
 
 // Creating the handback csv file
 const writeCollectionsToCsv = async() => {
-  mongoose.connect("mongodb+srv://tengtjinyang:zagNwPsta2HHTyfE@transferconnect.0papjri.mongodb.net/TransferConnectDB", {useNewUrlParser: true, useUnifiedTopology: true} );
+  mongoose.connect(process.env.MONGODB_URL1, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  const csvWriter = createCsvWriter({
+    path: `${currentDate}_handback_out.csv`,
+    header: [
+      {id: `transferDate`, title: `Transfer Date`},
+      {id: `amount`, title: `Amount`},
+      {id: `referenceNumber`, title: `Reference number`},
+      {id: `outcomeCode`, title: `Outcome Code`}
+    ],
+  });
+
+  csvWriter.writeRecords([]);
 
   // Finding the data to append
   for (const collection of collections) {
     const Model = mongoose.model(collection, handbackFileFormSchema);
     try {
       const data = await Model.find();
-    
-      console.log("Data Retrieved from " + collection + ": " + data);
+      const newData = data.map(doc => doc.toObject());
+      console.log("Data Retrieved from " + collection + ": ", newData);
       
       const csvWriter = createCsvWriter({
         path: `${currentDate}_handback_out.csv`,
         header: [
-          {id: "transferDate", title: "Transfer Date"},
-          {id: "amount", title: "Amount"},
-          {id: "referenceNumber", title: "Reference number"},
-          {id: "outcomeCode", title: "Outcome Code"}
-        ]
-      });
-      // TODO => Figure out how to generate the handback csv 
-      await csvWriter.writeRecords(data);
+          {id: `transferDate`, title: `Transfer Date`},
+          {id: `amount`, title: `Amount`},
+          {id: `referenceNumber`, title: `Reference Number`},
+          {id: `outcomeCode`, title: `Outcome Code`}
+        ],
+        append: true
+      });      
+
+      await csvWriter.writeRecords(newData);
+
+      console.log(`Data written to ${currentDate}_handback_out.csv.`);
 
       }
       catch (error) {
         console.error("An error occurred while handling collection " + collection + ": " + error);
         }
-      
   }
   mongoose.connection.close();
 };
+
+// Updating the handback file into DB
+const updateDB = async() => {
+  mongoose.connect(process.env.MONGODB_URL1, {useNewUrlParser: true, useUnifiedTopology: true} );
+
+  // Need to filter based on the 
+}
 
 
 // Running the functions
