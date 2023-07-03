@@ -11,6 +11,8 @@
 require('dotenv').config({path: __dirname + '/../.env'});
 const handbackFileFormSchema = require('../models/handbackFileForm');
 const mongoose = require('mongoose');
+const fs = require(`fs`);
+const csvParser = require(`csv-parser`);
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const Files = require('files.com/lib/Files').default;
 const File = require('files.com/lib/models/File').default;
@@ -25,56 +27,58 @@ function getDate(date) {
   return date_out;
 }
 // Getting Current Date
-const currentDate = getDate(new Date());
+const currentDate = getDate(new Date()); // to change into sftptestdate after final implementation
 
-// Define Collections
-const collections = [`handback_test1`];
-const mongo_lp_list = [`dbssgs`, `qflyers`, `gojets`];
+// Defining Collection Names
+const mongoLPList = [`dbssgs`, `qflyers`, `gojets`];
+const sftpLPList = ['DBSSG', `QFlyers`, `GoJets`];
 
 const retrieveFromServer = async() => {
+  const sftpTestDate = `20200812`; // TODO: Change this to current date on final implementation
 
-  const sftp_lp_list = ['DBSSG', `QFlyers`, `GoJets`];
-  
-  const sftp_test_date = `20200812`;
-
-  for (const lp of sftp_lp_list ) {
+  for (const lp of sftpLPList ) {
+    // Config Details
     Files.setBaseUrl('https://kaligo.files.com');
     Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
-    const fileName = `${lp}_HANDBACK_${sftp_test_date}.csv`;
-    
+
+    // Downloading the handback file from the server
+    const fileName = `${lp}_HANDBACK_${sftpTestDate}.csv`;
     const foundFile = await File.find(`/transfer_connect_sutd_case_study_2023/c4i1/Handback/${lp}/${fileName}`);
     const downloadableFile = await foundFile.download();
-{
+
     if (!isBrowser()) {
-      // download to a file on disk
+      // Download to a file on disk
       await downloadableFile.downloadToFile(`./sftp_handback_downloads/${fileName}`);
     }
-  }
-};
-    
-  
-  // const csvWriter = createCsvWriter({
-  //   path: `AL_HANDBACK.csv`,
-  //   header: [
-  //     {id: 'memberID', title: 'Member ID'},
-  //     {id: 'memberFirstName', title: 'Member first name'},
-  //     {id: 'memberLastName', title: 'Member last name'},
-  //     {id: 'transferDate', title: 'Transfer date'},
-  //     {id: 'amount', title: 'Amount'},
-  //     {id: 'referenceNumber', title: 'Reference number'},
-  //     {id: 'partnerCode', title: 'Partner code'},
-  //     {id: `outcomeCode`, title: `Outcome Code`}
-  //   ],
-  // });
-  //  const outcomeCode_list = [`0000`, `0001`, `0002`, `0003`, `0004`, `0005`, `0099`]
-  //  const gen_outcomeCode = outcomeCode_list[Math.floor(Math.random() * items.length)];
+  };
+}
 
-  //  // Writing to the csv file
-  //   await csvWriter.writeRecords()
+const extractDataFromCsv = async(filePath) => {
+  // List of outcomeCodes
+  const outcomeCodeList = ['0000', '0001', '0002', '0003', '0004', '0005', '0099'];
+  // Randomly pick an outcomeCode
+  const random_outcomeCode = outcomeCodeList[Math.floor(Math.random() * outcomeCodeList.length)];
 
-  // Write to the csv file
-  // await csvWriter.writeRecords()
-  }
+  const str1 = filePath.split('/');
+  const splitStr = str1[str1.length-1].split(/_/);
+  const partnerCode = splitStr[0];
+
+  const results = []; // List to store the dictionaries
+
+  fs.createReadStream(filePath)
+    .pipe(csvParser())
+    .on('data', (data) => {
+      // Adding outcomeCode field
+      data[`Outcome Code`] = random_outcomeCode;
+
+      // Pushing the whole result
+      results.push(data);
+    })
+    .on('end', () => {
+      console.log(results);
+    });
+  return partnerCode, results;
+}
     
 
 // Creating the handback csv files
@@ -175,9 +179,8 @@ const retrieveFromServer = async() => {
 
 // Running the functions
 const main = async () => {
-  // await writeCollectionsToCsv();
-  // await uploadFilesToServer();
-  await retrieveFromServer();
+  // await retrieveFromServer();
+  await extractDataFromCsv(`C:/SUTD/Term 5/Software Construct/Project/50.003_ESC_Project/transfer-connect-app/server/controllers/sftp_handback_downloads/DBSSG_HANDBACK_20200812.csv`);
   console.log("Done!");
 }
 
