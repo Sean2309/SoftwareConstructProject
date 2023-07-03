@@ -21,12 +21,6 @@ class AuthManagerController {
             response.json("User not found")
           }
         })
-      //console.log('User not found');
-      //return response.status(404).json({ message: 'User not found' });
-
-      //console.log("Auth Successful")
-      // Authentication successful, send a success response or perform any other actions
-      //response.status(200).json({ message: 'Authentication successful' });
     } catch (error) {
       console.error(error);
       response.status(500).json({ message: 'Server error' });
