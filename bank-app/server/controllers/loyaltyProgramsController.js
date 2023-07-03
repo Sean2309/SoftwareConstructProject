@@ -14,6 +14,7 @@ class LoyaltyProgramsController {
   }
 
   // to populate db 
+  // I can adjust this later
   populateDb = async () => {
     const mockLoyaltyPrograms = [
       {

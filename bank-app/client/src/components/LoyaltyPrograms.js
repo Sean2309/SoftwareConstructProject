@@ -33,6 +33,7 @@ class LoyaltyPrograms extends Component {
         }
         
         return loyaltyProgramsData.map((data, index) => (
+            // call LoyaltyProgram.js as a card, populate with this data
             <LoyaltyProgram key={index} data={data} />
         ));
     }

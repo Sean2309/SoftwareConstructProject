@@ -15,6 +15,9 @@ const Layout = () => {
                         <Link to="Login">Login</Link>
                     </li>
                     <li>
+                        <Link to="deprecatedTransferPage">deprecatedTransferPage</Link>
+                    </li>
+                    <li>
                         <Link to="RewardCenter">RewardCenter</Link>
                     </li>
 
