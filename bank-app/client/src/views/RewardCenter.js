@@ -4,10 +4,6 @@ import { Link } from 'react-router-dom';
 
 // don't forget to edit layout to add in the direct bullet link point
 
-
-
-
-// doesn't work. please, help me
 const baselineAlign = {
     display: 'flex',
     flexDirection: 'row'

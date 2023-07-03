@@ -5,9 +5,9 @@ import './App.css';
 // import views
 import Layout from './views/Layout';
 import Home from './views/Home';
-import TransferPage from './views/TransferPage';
+// import TransferPage from './views/TransferPage';
 import Login from './views/Login';
-import RewardCenter from './views/RewardCenter';
+// import RewardCenter from './views/RewardCenter';
 import Marketplace from './views/Marketplace';
 
 function App() {
@@ -22,9 +22,9 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* variable rendering depending on route */}
           <Route index element={<Home />} />
-          <Route path="deprecatedTransferPage" element={<TransferPage />} />
+          {/* <Route path="deprecatedTransferPage" element={<TransferPage />} /> */}
           <Route path="Login" element={<Login />} />
-          <Route path="rewardCenter" element={<RewardCenter/>} />
+          {/* <Route path="rewardCenter" element={<RewardCenter/>} /> */}
           <Route path="marketplace" element={<Marketplace />} />
         </Route>
       </Routes>

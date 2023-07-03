@@ -16,10 +16,10 @@ const Layout = () => {
                     </li>
                     {/* <li>
                         <Link to="deprecatedTransferPage">deprecatedTransferPage</Link>
-                    </li> */}
+                    </li> 
                     <li>
                         <Link to="RewardCenter">RewardCenter</Link>
-                    </li>
+                    </li>*/}
 
                 </ul>
 
