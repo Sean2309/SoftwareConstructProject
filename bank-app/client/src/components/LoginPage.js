@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 class LoginPage extends Component {
@@ -21,6 +22,7 @@ class LoginPage extends Component {
             console.log(response.data);
             if(response.data ==="Success"){
                 console.log("Redirect to specified page")
+                useNavigate('marketplace')
             }
           })
           .catch(error => {

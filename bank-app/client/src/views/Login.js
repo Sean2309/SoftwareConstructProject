@@ -2,9 +2,7 @@ import React, {Component} from 'react';
 // import loginBGimg from "../img/Login-bg.png"
 import loginLogo from "../img/Login-logo.png"
 import LoginPage from "../components/LoginPage"
-import userLogo from "../img/User-logo.png"
-import passwordLogo from "../img/Password-logo.png"
-import { Link } from 'react-router-dom';
+
 import '../css/login-styles.css'
 // import LoginBackground from '../components/LoginBackground';
 
