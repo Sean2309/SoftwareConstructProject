@@ -53,7 +53,7 @@ class LoginPage extends Component {
 
                     <label htmlFor="password">PASSWORD: </label>
                     <input
-                        type="text"
+                        type="password"
                         id="password"
                         name="password"
                         value={password}
