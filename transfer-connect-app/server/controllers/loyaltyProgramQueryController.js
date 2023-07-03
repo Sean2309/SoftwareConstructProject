@@ -16,6 +16,7 @@ const loyaltyProgramQueryModel = require('../models/loyaltyProgramQueryModel');
 
 */
 
+// console.log(loyaltyProgramQueryModel.find({}));
 loyaltyProgramQueryController.get('/LPPdata', async(req,res) => {
   try {
     const data = await loyaltyProgramQueryModel.find({});
