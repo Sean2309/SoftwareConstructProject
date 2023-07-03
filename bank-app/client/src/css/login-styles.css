@@ -7,6 +7,10 @@
     align-items: center;
 }
 
+/* todo: redo with flexboxes etc  */
+/* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+/* at least now I've become a fullstack dev /hs */
+
 .logo-box {
     left: 45%; 
     top: 50vh; 
