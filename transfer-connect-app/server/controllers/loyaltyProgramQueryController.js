@@ -28,17 +28,26 @@ const currencyRateModel = require('../models/currencyRateModel');
 
 */
 
-// loyaltyProgramQueryController.get('/LPPdata', async(req,res) => {
   class LoyaltyProgramQueryController {
     getLoyaltyPrograms = async (request, response, appName) => {
+      console.log(`getLoyaltyPrograms Method is running. appName parameter is` , appName);
+      
       try {
+        
         const loyaltyPrograms = await loyaltyProgramQueryModel.find();   // Fetch all oyaltyProgramProviders
-        const currencyRates_LPPs = await currencyRateModel.findOne({appName});   // Fetch the document correspond to the appName, which contains all loyalty programs and currency rates 
+        const currencyRates_LPPs = await currencyRateModel.find();   // Fetch the document correspond to the appName, which contains all loyalty programs and currency rates 
+       
+        // THIS PART DONT WORK :( Console log shows an empty array.. i got documents in this collection :( 
+       
+    
+        console.log(currencyRates_LPPs);
         
         const programRates ={};
+    
         const programIDs= currencyRates_LPPs.programID.split(','); // Split the programID string into an array of individual program IDs
+        
         const currencyRates = currencyRates_LPPs.currencyRate.split(','); // Split the currencyRate string into an array of individual currency rates
-
+       
 
         programIDs.forEach((programID, index) => {
           programRates[programID] = parseFloat(currencyRates[index]); 

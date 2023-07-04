@@ -10,6 +10,7 @@ const loyaltyProgramQueryRouter = (appName) => {
   router.get('/', (req, res) => {
     // Call the getLoyaltyPrograms function on the controller with the appName: BankApp
     loyaltyProgramQueryController.getLoyaltyPrograms(req, res, appName);
+    console.log(`The router is reading the appName:`, appName);
   });
 
   return router;

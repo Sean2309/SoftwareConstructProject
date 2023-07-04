@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 
 //Schema tells Mongoose how loyaltyProgramQueryModel objects are stored in Db
 const currencyRateSchema = new mongoose.Schema({
-  appName: String,
+  
   programID: String,
-  currencyRate: String
+  currencyRate: String,
+  appName: String
 },{ collection: 'CurrencyRates' });
 
 

@@ -25,6 +25,8 @@ app.use(express.json());
 // routes based on bankapp
 app.use('/api/loyaltyprograms/BankApp', loyaltyProgramQueryRouter('BankApp'));
 app.use('/api/loyaltyprograms/DBS', loyaltyProgramQueryRouter('DBS'));
+
+
   
 
 app.listen(config.PORT, () => {
