@@ -1,71 +1,95 @@
-const express = require('express');
-const loyaltyProgramQueryController = express.Router();
+// const express = require('express');
+// const loyaltyProgramQueryController = express.Router();
 const loyaltyProgramQueryModel = require('../models/loyaltyProgramQueryModel');
 const currencyRateModel = require('../models/currencyRateModel');
 
+
 /* 
+
   sample data format :LoyaltyProgramQuery Model 
   { 
-  programID: "GOPOINTS"
+  {programID: "GOPOINTS"
   programName: "GoJet Points"
   currencyName: "GoPoints"
   processingTime: "Instant"
   description: "YOL"
   enrollmentLink: "https://www.gojet.com/member/"
   tncLink: "https://www.gojet.com/aa/about-us/en/gb/terms-and-conditions.html"
+  membershipFormat:9digits1letter  
   }
 
     sample data format :CurrencyRate Model 
   { 
-    currencyRate: "1"
-    programID: "GOPOINTS"
+    appName: "BankApp"
+    programID: "GOPOINTS,KRISFLYER"
+    currencyRate: "1.0,1.5"
   }
+    
 
 */
 
 // loyaltyProgramQueryController.get('/LPPdata', async(req,res) => {
-loyaltyProgramQueryController.get('/:programID', async(req,res) => {
-  try {
-    // const data = await loyaltyProgramQueryModel.find({});
-    const { programID } = req.params;
-    
-    // convert documents to an array 
-    const loyaltyProgramProviders = await loyaltyProgramQueryModel.find({programID});
-    const currencyRates = await currencyRateModel.find({programID});
+  class LoyaltyProgramQueryController {
+    getLoyaltyPrograms = async (request, response, appName) => {
+      try {
+        const loyaltyPrograms = await loyaltyProgramQueryModel.find();   // Fetch all oyaltyProgramProviders
+        const currencyRates_LPPs = await currencyRateModel.findOne({appName});   // Fetch the document correspond to the appName, which contains all loyalty programs and currency rates 
+        
+        const programRates ={};
+        const programIDs= currencyRates_LPPs.programID.split(','); // Split the programID string into an array of individual program IDs
+        const currencyRates = currencyRates_LPPs.currencyRate.split(','); // Split the currencyRate string into an array of individual currency rates
 
-    // Combine the data from both collections based on the programID field
-    const combinedData = loyaltyProgramProviders.map(program => {
-    const currencyRate = currencyRates.find(rate => rate.programID === program.programID);
-    const transformedDocument={
-      programID: program.programID,
-      programName: program.programName,
-      currencyName: program.currencyName,
-      processingTime: program.processingTime,
-      description: program.description,
-      enrollmentLink: program.enrollmentLink,
-      tncLink: program.tncLink,
-      membershipFormat: program.membershipFormat,
-      currencyRate: currencyRate ? currencyRate.currencyRate : null
+
+        programIDs.forEach((programID, index) => {
+          programRates[programID] = parseFloat(currencyRates[index]); 
+          // Store each program ID with its corresponding currency rate in the programRates object
+          // Eg: programRates = { GOPOINTS: 1.0, KRISFLYER: 1.5};
+        });
+
+        // Combine LPP documents with respective currency rates
+        const combinedData = loyaltyPrograms.map((document) => {
+          const programID = document.programID;
+          const currencyRate = programRates[programID];
+
+          return {
+            programID: document.programID,
+            programName: document.programName,
+            currencyName: document.currencyName,
+            processingTime: document.processingTime,
+            description: document.description,
+            enrollmentLink: document.enrollmentLink,
+            tncLink: document.tncLink,
+            membershipFormat: document.membershipFormat,
+            currencyRate: currencyRate,
+           };
+        });
+
+
+      // Transform the data before sending the response
+      const transformedData = combinedData.map((document) => {
+        const transformedDocument = { ...document };
+        delete transformedDocument._id;
+        return transformedDocument;
+      });
+
+      console.log(transformedData); // Output transformed data to the terminal
+
+        // Send the transformed data as the response
+        response.status(200).json(transformedData);
+      } 
+      catch (error) {
+        response.status(500).json({ message: error.message });
+      }
     };
-    // if (program._id) {
-    //   transformedDocument.id = program._id.toString();
-    // }
-    
-    // return transformedDocument;
-    });
+  }
 
-     // Transform the data before sending the response
-     const transformedData = combinedData.map(document => {
-      const transformedDocument = { ...document };
-      // if (transformedDocument._id) {
-      //   transformedDocument.id = transformedDocument._id.toString();
-      //   delete transformedDocument._id;
-      // }
-      delete transformedDocument._id;
-      // delete transformedDocument.__v;
-      return transformedDocument;
-    });
+const loyaltyProgramQueryController = new LoyaltyProgramQueryController();
 
+module.exports = loyaltyProgramQueryController;
+
+
+
+// ----------- Serialized JSON response -------- //
     //  // Transform the data before sending the response
     //  const transformedData = data.map(document => {
     //   const transformedDocument = { ...document._doc };
@@ -75,22 +99,6 @@ loyaltyProgramQueryController.get('/:programID', async(req,res) => {
     //   delete transformedDocument.id;
     //   return transformedDocument;
     // });
-    
-    console.log(transformedData); // Output transformed data to the terminal
-    res.status(200).json(transformedData); // convert 'transformedData' to JSON string and send as the response body , along with HTTP status 
-
-}
-  catch (error){
-    res.status(500).json({message:error.message})
-  }
-})
-
-
-module.exports = loyaltyProgramQueryController;
-
-
-
-
 
 // -------------------- ADDITION TO DB ------------ // 
 // Insert new LoyaltyProgramProvider into Db 
@@ -126,5 +134,9 @@ module.exports = loyaltyProgramQueryController;
 // };
 // --------------------------------- //
 
-
+//-------- extracting appName from URL -----//
+    // extracting 'appName' parameter from 'request.params' object
+        // Eg: in the URL : ../loyaltyprograms/BankApp, the parameter `appName` would be `BankApp` 
+        // const { appName } = request.params;
+    
 

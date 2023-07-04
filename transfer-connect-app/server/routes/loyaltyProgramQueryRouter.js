@@ -1,8 +1,18 @@
-const loyaltyProgramQueryRouter = require('express').Router();
+
 const loyaltyProgramQueryController = require('../controllers/loyaltyProgramQueryController');
 
 
-// Router to handle GET request to /loyaltyprograms
-loyaltyProgramQueryRouter.get('/', loyaltyProgramQueryController.getLoyaltyPrograms)
+
+const loyaltyProgramQueryRouter = (appName) => {
+  const router = require('express').Router();
+
+  // Router to handle GET request to /api/loyaltyprogramsBankApp
+  router.get('/', (req, res) => {
+    // Call the getLoyaltyPrograms function on the controller with the appName: BankApp
+    loyaltyProgramQueryController.getLoyaltyPrograms(req, res, appName);
+  });
+
+  return router;
+};
 
 module.exports = loyaltyProgramQueryRouter;
