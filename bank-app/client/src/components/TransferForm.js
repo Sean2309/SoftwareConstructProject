@@ -85,6 +85,8 @@ class TransferForm extends Component {
         }
 
         return (
+            // refers to the transfer-styles.css .overlay
+            // this is the background image controller
             <div className= 'overlay'>
                 <dialog open={isOpen}>
                     <form onSubmit={this.handleSubmit}>

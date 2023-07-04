@@ -6,7 +6,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const transferFormRouter = require('./routes/transferFormRouter');
 const loyaltyProgramsRouter = require('./routes/loyaltyProgramsRouter');
-
+const authManagerRouter = require('./routes/authManagerRouter');
 const app = express();
 
 // connect to mongoDB cloud
@@ -22,7 +22,11 @@ app.use(express.json());
 // setup routes
 app.use('/api/transferFormSubmit', transferFormRouter)
 app.use('/api/loyaltyPrograms', loyaltyProgramsRouter);
+app.use('/Login', authManagerRouter);
 
 app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`);
 })
+
+
+
