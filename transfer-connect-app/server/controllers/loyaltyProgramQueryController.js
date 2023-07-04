@@ -35,17 +35,15 @@ const currencyRateModel = require('../models/currencyRateModel');
       try {
         
         const loyaltyPrograms = await loyaltyProgramQueryModel.find();   // Fetch all oyaltyProgramProviders
-        const currencyRates_LPPs = await currencyRateModel.find();   // Fetch the document correspond to the appName, which contains all loyalty programs and currency rates 
-       
-        // THIS PART DONT WORK :( Console log shows an empty array.. i got documents in this collection :( 
+        const currencyRates_LPPs = await currencyRateModel.find({appName});   // Fetch the document correspond to the appName, which contains all loyalty programs and currency rates 
        
     
-        console.log(currencyRates_LPPs);
+        console.log(typeof currencyRates_LPPs);
         
         const programRates ={};
-    
         const programIDs= currencyRates_LPPs.programID.split(','); // Split the programID string into an array of individual program IDs
-        
+      
+
         const currencyRates = currencyRates_LPPs.currencyRate.split(','); // Split the currencyRate string into an array of individual currency rates
        
 
