@@ -38,17 +38,16 @@ graph LR
     subgraph reward center
         style RC fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        RC([fa:fa-user Reward Center View]) --- childRC_1([communicate with loyalty program controller])
-        RC([fa:fa-user Reward Center View]) --- childRC_2([display loyalty program models])
-        RC([fa:fa-user Reward Center View]) --- childRC_3([display current points])
-        RC([fa:fa-user Reward Center View]) --- childRC_4([query credit transfer form])
+        RC([fa:fa-user User]) --- childRC_2([browse loyalty program list])
+        RC([fa:fa-user User]) --- childRC_3([see current points])
+        RC([fa:fa-user User]) --- childRC_4([open credit transfer form of a program])
 
         style LPM fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        LPM([fa:fa-user Loyalty Program Model]) --- childLPM_1([display loyalty program names])
-        LPM([fa:fa-user Loyalty Program Model]) --- childLPM_2([display loyalty program rates])
-        LPM([fa:fa-user Loyalty Program Model]) --- childLPM_3([display loyalty program description])
-        LPM([fa:fa-user Loyalty Program Model]) --- childLPM_4([display loyalty program information links])
+        LPM([fa:fa-user Reward Center System]) --- childLPM_1([display loyalty program names])
+        LPM([fa:fa-user Reward Center System]) --- childLPM_2([display loyalty program rates])
+        LPM([fa:fa-user Reward Center System]) --- childLPM_3([display loyalty program description])
+        LPM([fa:fa-user Reward Center System]) --- childLPM_4([display loyalty program information links])
 
         
     end
@@ -57,10 +56,10 @@ graph LR
 
         style PTC fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        PTC([fa:fa-user Transfer Form Controller]) --- childPTC_1([post transactions])
-        PTC([fa:fa-user Transfer Form Controller]) --- childPTC_2([display loyalty program rates])
-        PTC([fa:fa-user Transfer Form Controller]) --- childPTC_3([display loyalty program description])
-        PTC([fa:fa-user Transfer Form Controller]) --- childPTC_4([display loyalty program information links])
+        PTC([fa:fa-user User]) --- childPTC_1([make point transactions])
+        PTC([fa:fa-user User]) --- childPTC_2([access loyalty program rates])
+        PTC([fa:fa-user User]) --- childPTC_3([read loyalty program description])
+        PTC([fa:fa-user User]) --- childPTC_4([press loyalty program information links])
     end
 
     subgraph loyalty program
@@ -72,7 +71,9 @@ graph LR
         direction LR  %%
         LP_A([fa:fa-user Bank App]) --- childLP_1([request loyalty program details])
         LP_B([fa:fa-user Ascenda Administrator]) --- childLP_2([request loyalty program information from database])
-        LP_C([fa:fa-user Database]) --- childLP_3([send requested information])
+        LP_C([fa:fa-user Database]) --- childLP_C1([receive loyalty program details from bank])
+        LP_C([fa:fa-user Database]) --- childLP_C1([update loyalty program details])
+        LP_C([fa:fa-user Database]) --- childLP_C2([send requested information to bank app])
         LP_D([fa:fa-user Client Bank]) --- childLP_4([provide partnership loyalty program details])
     end
 
