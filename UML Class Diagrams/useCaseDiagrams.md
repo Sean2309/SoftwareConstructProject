@@ -72,8 +72,8 @@ graph LR
         LP_A([fa:fa-user Bank App]) --- childLP_1([request loyalty program details])
         LP_B([fa:fa-user Ascenda Administrator]) --- childLP_2([request loyalty program information from database])
         LP_C([fa:fa-user Database]) --- childLP_C1([receive loyalty program details from bank])
-        LP_C([fa:fa-user Database]) --- childLP_C1([update loyalty program details])
-        LP_C([fa:fa-user Database]) --- childLP_C2([send requested information to bank app])
+        LP_C([fa:fa-user Database]) --- childLP_C2([update loyalty program details])
+        LP_C([fa:fa-user Database]) --- childLP_C3([send requested information to bank app])
         LP_D([fa:fa-user Client Bank]) --- childLP_4([provide partnership loyalty program details])
     end
 
