@@ -1,12 +1,19 @@
 const axios = require('axios');
 const { TRANSFER_CONNECT_API_URL } = require('../utils/config.js');
-const handback = require('../models/transactionEnquiryModel.js');
+const { mongoose } = require('mongoose');
+const transactionSchema = require('../models/transactionEnquiryModel.js').transactionSchema;
+const loyaltyprograms = require('../models/transactionEnquiryModel.js').loyaltyprograms;
 
+ 
 
-async function getReferenceNumbers(){
+async function getReferenceNumbers(loyaltyprogram){
+  //connect to specific collection
+  const collection_connection = mongoose.model(loyaltyprogram, transactionSchema, loyaltyprogram);
+  
   //remember to define variables first
   let reference_numbers = [];
-  await handback.find({"Outcome updated": false}, {"Outcome code": 1, "Reference number": 1})
+  //find those that don't have outcomeCode declared or values are empty
+  await collection_connection.find({"outcomeCode":{$exists: true, $ne:""}}, {"Reference number": 1})
     .then(transactions => {
       if (transactions) {
         console.log('Found reference numbers:', transactions);
@@ -22,7 +29,7 @@ async function getReferenceNumbers(){
     return reference_numbers;}
   
 
-async function makeApiRequest(id_list) {
+async function makeApiRequest(id_list, loyaltyprogram) {
   if (id_list.length === 0){
     console.log("id_list is null")
     return;
@@ -30,7 +37,7 @@ async function makeApiRequest(id_list) {
   var response;
   //id_list is obtained from getReferenceNumbers
   let string_ids = (id_list).join();
-  let url = TRANSFER_CONNECT_API_URL + '/transferconnect/check/';
+  let url = TRANSFER_CONNECT_API_URL + '/transferconnect/DBS/' + loyaltyprogram;
   url = url + string_ids;
   console.log(url);
   try {
@@ -45,13 +52,14 @@ async function makeApiRequest(id_list) {
 
 
 setInterval(() => {
-  getReferenceNumbers()
-    .then(id_list => makeApiRequest(id_list))
+  for (let loyaltyprogram in loyaltyprograms){
+  getReferenceNumbers(loyaltyprogram)
+    .then(id_list => makeApiRequest(id_list, loyaltyprogram))
     .then(response_data => updateOutcomeCodes(response_data))
     .catch(error => {
       // Handle any errors that occur during the promise chain
       console.error(error);
-    });
+    });}
 }, 5 * 1000); // 5 seconds
 
 
@@ -66,7 +74,7 @@ async function updateOutcomeCodes(handback_data){
     console.log(reference_number);
     let outcome_code = data["Outcome code"];
     console.log(outcome_code);
-    handback.updateOne({"Reference number": reference_number}, {$set: {"Outcome updated": true, "Outcome code": outcome_code}}).exec();
+    handback.updateOne({"Reference number": reference_number}, {$set: {"Outcome code": outcome_code}}).exec();
   };
   return;
 };

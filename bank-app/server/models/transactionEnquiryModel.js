@@ -1,12 +1,15 @@
-const { default: mongoose } = require('mongoose');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 
-const transaction = new Schema({
-  "Reference number": String,
-  "Outcome code": String,
-  "Outcome updated": Boolean
-})
+//edit fields according to handback file 
+const transactionSchema = new mongoose.Schema({
+  "membershipId": String,
+  "membershipName": String,
+  "transferDate": String,
+  "transferAmount": Number,
+  "referenceNumber": String,
+  "partnerCode": String,
+  "outcomeCode": String
+});
 
-const handback = mongoose.model('transactions', transaction);
-
-module.exports = handback;
+const loyaltyprograms = ["AirAsia", "GoJet"];
+module.exports = {transactionSchema, loyaltyprograms};
