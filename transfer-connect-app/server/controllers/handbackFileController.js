@@ -77,10 +77,6 @@ const extractDataFromCsv = async(filePath) => {
 }
 
 const uploadFilesToMongoDB = async() => {
-  // Naming Conventions:
-  // 1. SFTP Server Name: DBSSG
-  // 2. MongoDB Collection Name: dbssg
-
   // Connecting to MongoDB
   mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -88,56 +84,44 @@ const uploadFilesToMongoDB = async() => {
   for (let i = 0; i < sftpLPList.length; i++) {
     // Getting the file path
     const filePath = `./sftp_handback_downloads/${sftpLPList[i]}_HANDBACK_${testDate}.csv`;
-    // console.log(`File path is: ${filePath}`);
     
     try {
       // Extracting the data from the csv file
       const [partnerCode, results] = await extractDataFromCsv(filePath);
-      console.log(`Current collection: ${partnerCode}`);
-  
-      // console.log(`Partner code is: ${partnerCode}`);
-      // console.log(`Results are: ${data}`)
 
+      // Getting the Model for this iteration
       const Model = await mongoose.model(mongoLPList[i], handbackFileFormSchema);
-      // TODO: Find the correct method to update the mongo db
-      // results dtype: [object Object] => Cannot call the attributes
-      // const data = results.map((result) => {
-      //   return new Model(result);
-      // } )
       
-      // console.log(data)
-      await Model.updateMany(
-        { partnerCode: partnerCode, referenceNumber: results.referenceNumber },
-        { $set: [
-          {outcomeCode : results[`Outcome Code`]},
-        ] }
-      )
-      // for (let j=0; j < results.length;j++) {
-      //   const item = results[j];
-      //   console.log(item);
-      //   console.log(`#########`)
+      // Iterating over the results
+      for (const result of results) {
+        // Before we can insert or update data, we need to map the result's keys to match our schema
+        let mappedResult = {
+          partnerCode: partnerCode, 
+          referenceNumber: result['Reference number'], 
+          outcomeCode: result['Outcome Code'],
+        };
+        
+        // Search for an existing document with the same referenceNumber
+        let doc = await Model.findOne({ referenceNumber: mappedResult.referenceNumber });
 
+        if (doc) {
+          // If the document exists, update it
+          doc.set(mappedResult);
+          await doc.save();
+        } else {
+          // If the document does not exist, create it
+          await Model.create(mappedResult);
+        }
+      }
 
-      //   // await Model.updateMany(
-      //   //   { referenceNumber: item[`Reference number`] , 
-      //   //     transferDate: item[`Transfer date`]
-      //   //   },
-      //   //   { $set: [
-      //   //     {outcomeCode : item[`Outcome Code`]},
-      //   //   ] }
-      //   // )
-      //   // await Model.insertMany(item);
-      // }
-
-      // await Model.insertMany(results);
-      console.log("Data inserted successfully");
+      console.log("Data inserted/updated successfully");
     } catch (error) {
       console.log(error);
     }
   }
 
   mongoose.connection.close();
-}    
+}
 
 // Running the functions
 const main = async () => {
