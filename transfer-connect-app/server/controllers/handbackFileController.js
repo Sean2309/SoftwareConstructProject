@@ -93,13 +93,12 @@ const uploadFilesToMongoDB = async() => {
     try {
       // Extracting the data from the csv file
       const [partnerCode, results] = await extractDataFromCsv(filePath);
+      console.log(`Current collection: ${partnerCode}`);
   
       // console.log(`Partner code is: ${partnerCode}`);
       // console.log(`Results are: ${data}`)
 
       const Model = await mongoose.model(mongoLPList[i], handbackFileFormSchema);
-
-      console.log(`Data to be inserted: ${results}`);
       // TODO: Find the correct method to update the mongo db
       // results dtype: [object Object] => Cannot call the attributes
       // const data = results.map((result) => {
@@ -107,12 +106,29 @@ const uploadFilesToMongoDB = async() => {
       // } )
       
       // console.log(data)
-      // await Model.updateMany(
-      //   { partnerCode: partnerCode, referenceNumber: results.referenceNumber },
-      //   { $set: [
-      //     {outcomeCode : results[`Outcome Code`]},
-      //   ] }
-      // )
+      await Model.updateMany(
+        { partnerCode: partnerCode, referenceNumber: results.referenceNumber },
+        { $set: [
+          {outcomeCode : results[`Outcome Code`]},
+        ] }
+      )
+      // for (let j=0; j < results.length;j++) {
+      //   const item = results[j];
+      //   console.log(item);
+      //   console.log(`#########`)
+
+
+      //   // await Model.updateMany(
+      //   //   { referenceNumber: item[`Reference number`] , 
+      //   //     transferDate: item[`Transfer date`]
+      //   //   },
+      //   //   { $set: [
+      //   //     {outcomeCode : item[`Outcome Code`]},
+      //   //   ] }
+      //   // )
+      //   // await Model.insertMany(item);
+      // }
+
       // await Model.insertMany(results);
       console.log("Data inserted successfully");
     } catch (error) {

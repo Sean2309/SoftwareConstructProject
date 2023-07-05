@@ -2,8 +2,8 @@ const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const handbackFileFormSchema = new mongoose.Schema({
-  transferDate: Date,
-  amount: Number,
+  transferDate: String,
+  transferAmount: Number,
   referenceNumber: String,
   outcomeCode: String
 });
