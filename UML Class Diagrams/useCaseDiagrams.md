@@ -38,9 +38,10 @@ graph LR
     subgraph reward center
         style RC fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        RC([fa:fa-user Point Transfer View]) --- childRC_1([display loyalty program models])
-        RC([fa:fa-user Point Transfer View]) --- childRC_2([display current points])
-        RC([fa:fa-user Point Transfer View]) --- childRC_3([query credit transfer form])
+        RC([fa:fa-user Reward Center View]) --- childRC_1([communicate with loyalty program controller])
+        RC([fa:fa-user Reward Center View]) --- childRC_2([display loyalty program models])
+        RC([fa:fa-user Reward Center View]) --- childRC_3([display current points])
+        RC([fa:fa-user Reward Center View]) --- childRC_4([query credit transfer form])
 
         style LPM fill-opacity:0, stroke-opacity:0;
         direction LR  %%
@@ -61,6 +62,20 @@ graph LR
         PTC([fa:fa-user Transfer Form Controller]) --- childPTC_3([display loyalty program description])
         PTC([fa:fa-user Transfer Form Controller]) --- childPTC_4([display loyalty program information links])
     end
+
+    subgraph loyalty program
+
+        style LP_A fill-opacity:0, stroke-opacity:0;
+        style LP_B fill-opacity:0, stroke-opacity:0;
+        style LP_C fill-opacity:0, stroke-opacity:0;
+        style LP_D fill-opacity:0, stroke-opacity:0;
+        direction LR  %%
+        LP_A([fa:fa-user Bank App]) --- childLP_1([request loyalty program details])
+        LP_B([fa:fa-user Ascenda Administrator]) --- childLP_2([request loyalty program information from database])
+        LP_C([fa:fa-user Database]) --- childLP_3([send requested information])
+        LP_D([fa:fa-user Client Bank]) --- childLP_4([provide partnership loyalty program details])
+    end
+
 
 
 

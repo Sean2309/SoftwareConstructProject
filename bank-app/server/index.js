@@ -22,7 +22,7 @@ app.use(express.json());
 // setup routes
 app.use('/api/transferFormSubmit', transferFormRouter)
 app.use('/api/loyaltyPrograms', loyaltyProgramsRouter);
-app.use('/Login', authManagerRouter);
+app.use('/login', authManagerRouter);
 
 app.listen(config.PORT, () => {
     console.log(`Server running on port ${config.PORT}`);
