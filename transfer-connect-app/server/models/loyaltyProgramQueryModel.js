@@ -12,7 +12,7 @@ const loyaltyProgramQuerySchema = new mongoose.Schema({
   tncLink: String,
   membershipFormat: String
 },{ collection: 'loyaltyProgramProviders' });
-//{collection:`loyaltyProgramQueryModel` } 
+
 
 
 const loyaltyProgramQueryModel = mongoose.model('loyaltyProgramQueryModel', loyaltyProgramQuerySchema);

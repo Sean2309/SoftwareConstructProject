@@ -11,6 +11,8 @@ const loyaltyProgramQueryRouter = require("./routes/loyaltyProgramQueryRouter")
 const app = express();
 
 // connect to mongoDB cloud
+
+// mongoose.connect('mongodb+srv://test:1234@test.j9ugyp5.mongodb.net/Dtest?retryWrites=true&w=majority') : Alternate DB for testing
 mongoose.connect('mongodb+srv://Daniel:vLfmoyUKJ3Fy8dzx@transferconnect.0papjri.mongodb.net/TransferConnectDB?retryWrites=true&w=majority')
   .then((res) => console.log('connected'))
   .catch((err) => console.error('error'));
