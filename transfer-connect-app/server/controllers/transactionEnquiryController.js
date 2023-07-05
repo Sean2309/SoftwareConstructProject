@@ -1,6 +1,7 @@
 const { TRANSFER_CONNECT_API_URL } = require('../utils/config.js');
 const transactionSchema = require('../models/transactionEnquiryModel.js');
 const mongoose  = require('mongoose');
+const { UnorderedBulkOperation } = require('mongodb');
 
 
 //can improve code by using caching for faster data retrieval
@@ -38,14 +39,15 @@ async function getOutcomeCode(collection_connection, id_list){
   //use of instead of in - in makes 0000 into 0 
   for (let id of id_list){
     console.log(id);
-    await collection_connection.find({"referenceNumber": id}, {"outcomeCode": 1, "referenceNumber": 1, "_id": 0 })
+    //use .lean().exec() to return an obj instead of document
+    //check if referenceNumber has outcomeCode field + not empty
+    await collection_connection.find({"referenceNumber": id, "outcomeCode":{$exists: true, $ne:""}}, {"outcomeCode": 1, "referenceNumber": 1, "_id": 0 }).lean().exec()
     .then(user => {
-      if (user) {
+      if (user[0] != null) {
         console.log('Found transactions:', user);
         outcomeCodes.push(user[0]);
-
       } else {
-        console.log('Transactions not found');
+        console.log('Outcome code not updated or transaction not found.');
       }
     })
     .catch(error => {
@@ -53,6 +55,6 @@ async function getOutcomeCode(collection_connection, id_list){
   });}
   return outcomeCodes;
   };
-  
 
-module.exports = {processRoute, processRouteAdd};
+
+module.exports = {processRoute};
