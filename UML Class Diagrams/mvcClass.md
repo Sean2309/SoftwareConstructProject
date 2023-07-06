@@ -154,59 +154,31 @@ class QueryController{
     -handleRes: void()
 }
 ```
-# Transaction Enquiry API
-
-```mermaid
-classDiagram
-class transactionEnquiryController
-transactionEnquiryController -- transactionEnquiryModel
-
-
-class transactionEnquiryController{
-    - transactionSchema: transactionEnquiryModel
-    - processRoute()
-    - getOutcomeCode()
-}
-
-class transactionEnquiryModel{
-    - UserNumber: String
-    - membershipId: String,
-    - membershipName: String,
-    - transferDate: String,
-    - transferAmount: Number,
-    - referenceNumber: String,
-    - partnerCode: String,
-    - outcomeCode: String
-}
 
 # TransferFile SENDING API
 
 ```mermaid
 classDiagram
-    index -- AccrualController
-    AccrualController -- TransactionModel
 
-    class index{
-        queryFromDBandUpload: void
-    }
+AccrualController -- TransactionModel
 
-    class AccrualController{
-        -collections: List<<list>String>
-        -getFormattedDate(subtractDay: boolean, format: String): String
-        -writeCollectionsToCsv(): void
-        -uploadFilesToServer(): void
-        -queryFromDBandUpload(): void
-    }
+class AccrualController{
+    -transactionsList: List<<list>TransactionModel>
+    -retrieveFromDb(): void
+    -consolidateInfo(): void
+    -sendToServer():void
+}
 
-    class TransactionModel{
-        membershipId: String,
-        membershipName: String,
-        transferDate: String,
-        transferAmount: Number,
-        referenceNumber: String,
-        partnerCode: String,
-        outcomeCode: String,
-    }
+class TransactionModel{
+    -loyaltyProgramId: String
+    -userId: String
+    -userFirstName: String
+    -userLastName: String
+    -transferDate: Date
+    -amount: int
+    -referenceNo: String
+    -partnerCode: String
+}
 ```
 # TransferFile RETRIEVING API
 
@@ -219,15 +191,16 @@ HandbackController -- ConfirmationModel
 
 class HandbackController{
     -confirmedTransactions: List<<list>ConfirmationModel>
+
     -retrieveFromServer(): void
-    -extractDataFromCsv(String filePath): void
-    -uploadFilesToMongoDB(): void
+    -consolidateInfo(): void
+    -responseToGET(): List<<cm>ConfirmationModel> >> JSON
 }
 
 class ConfirmationModel{
     -transferDate: Date
-    -transferAmount: int
-    -referenceNumber: String
+    -amount: int
+    -referenceNo: String
     -outcomeCode: String
 }
 ```
