@@ -125,7 +125,7 @@ const uploadFilesToMongoDB = async() => {
 
 // Running the functions
 const main = async () => {
-  // await retrieveFromServer();
+  await retrieveFromServer();
   await uploadFilesToMongoDB();
   console.log("Done!");
 }
