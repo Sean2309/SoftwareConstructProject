@@ -4,6 +4,7 @@ const { mongoose } = require('mongoose');
 const transactionSchema = require('../models/transactionEnquiryModel.js').transactionSchema;
 const loyaltyprograms = require('../models/transactionEnquiryModel.js').loyaltyprograms;
 
+
 class TransactionEnquiryController {
   
   constructor() {
@@ -19,17 +20,16 @@ class TransactionEnquiryController {
     //find those that don't have outcomeCode declared or values are empty
     await collection_connection.find({ "outcomeCode": { $exists: false} }, { "referenceNumber": 1, "_id": 0})
       .then(transactions => {
-        if (transactions) {
-          console.log('Found reference numbers:', transactions);
+        if (transactions.length != 0) {
+          console.log(`Found reference numbers for ${loyaltyprogram}:`, transactions);
           reference_numbers = (transactions.map(transaction => transaction['referenceNumber']));
         } else {
-          console.log('No reference numbers found');
+          console.log(`No reference numbers found for ${loyaltyprogram}`);
         }
       })
       .catch(error => {
-        console.error('Error finding reference numbers:', error);
+        console.error(`Error finding reference numbers for ${loyaltyprogram}:`, error);
       });
-    console.log(reference_numbers);
     return reference_numbers;
   }
 
@@ -37,7 +37,7 @@ class TransactionEnquiryController {
   makeApiRequest = async (id_list, loyaltyprogram) => {
     
     if (id_list.length === 0) {
-      console.log("id_list is null")
+      console.log(`${loyaltyprogram} id_list is null`)
       return;
     }
     var response;
@@ -48,7 +48,10 @@ class TransactionEnquiryController {
     console.log(url);
     try {
       response = await axios.get(url); // Await the API response
-      console.log(response.data); // Handle the API response
+      if(response == null){
+        console.log("API request response is null");
+        return;
+      }
     } catch (error) {
       // Handle any errors
       console.error(error);
@@ -57,35 +60,33 @@ class TransactionEnquiryController {
   }
 
   startEnquiry = () => {
-    console.log('hello');
     setInterval(() => {
       for (const loyaltyprogram of loyaltyprograms) {
-        console.log(loyaltyprograms);
-        console.log(loyaltyprogram);
         this.getReferenceNumbers(loyaltyprogram)
           .then(id_list => this.makeApiRequest(id_list, loyaltyprogram))
-          .then(response_data => this.updateOutcomeCodes(response_data))
+          .then(response_data => this.updateOutcomeCodes(response_data, loyaltyprogram))
           .catch(error => {
             // Handle any errors that occur during the promise chain
             console.error(error);
           });
+          console.log('\n');
       }
     }, 5 * 1000); // 5 seconds
   }
 
 
   //to update bank-app database
-  updateOutcomeCodes = async (handback_data) => {
-    if (handback_data === null || handback_data === undefined) {
-      console.log("handback_data is null")
+  updateOutcomeCodes = async (response_data, loyaltyprogram) => {
+    const collection_connection = mongoose.model(loyaltyprogram, transactionSchema, loyaltyprogram);
+    if (response_data == null || response_data == undefined) {
+      console.log(`response_data for ${loyaltyprogram} is null`)
       return;
     }
-    for (const data of handback_data) {
+    for (const data of response_data) {
       let reference_number = data["referenceNumber"];
-      console.log(reference_number);
       let outcome_code = data["outcomeCode"];
-      console.log(outcome_code);
       collection_connection.updateOne({ "referenceNumber": reference_number }, { $set: { "outcomeCode": outcome_code } }).exec();
+      console.log(`Updated ${reference_number} of ${loyaltyprogram} with outcomeCode ${outcome_code}`);
     };
     return;
   }
