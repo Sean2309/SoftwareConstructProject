@@ -45,7 +45,7 @@ class LoyaltyProgramsController {
   // send GET request to transferConnect query API endpoint and store into db
   updateLoyaltyPrograms = async () => {
     try {
-      const response = await axios.get('http://example.com/api/loyalty-programs');
+      const response = await axios.get("http://202.94.70.51/api/loyaltyprograms/BankApp");
       const data = response.data;
 
       await LoyaltyPrograms.deleteMany({});
