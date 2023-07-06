@@ -4,6 +4,7 @@ const config = require('./utils/config');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const transactionEnquiryController = require('./controllers/transactionEnquiryController');
 
 
 const app = express();
@@ -22,6 +23,8 @@ app.use(cors());
 
 // for purpose of parsing incoming requests 
 app.use(express.json());
+
+app.use(transactionEnquiryController.startEnquiry.bind(transactionEnquiryController));
 
 
 app.listen(config.PORT, () => {
