@@ -9,21 +9,23 @@ graph LR
         TF([fa:fa-user TransferConnect App]) --- C([query TransferConnect DB])
         TF([fa:fa-user TransferConnect App]) --- D([compile data into accrual file])
         TF([fa:fa-user TransferConnect App]) --- E([send accrual file via SFTP server])
+
+
     end
 
     subgraph login
         style LU fill-opacity:0, stroke-opacity:0;
         style LS fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        LU([fa:fa-user Bank Customer]) --- childLU_1([enter username])
-        LU([fa:fa-user Bank Customer]) --- childLU_2([enter password])
-        LU([fa:fa-user Bank Customer]) --- childLU_3([press submit button])
+        LU([fa:fa-user Bank App User]) --- childLU_1([enter username])
+        LU([fa:fa-user Bank App User]) --- childLU_2([enter password])
+        LU([fa:fa-user Bank App User]) --- childLU_3([press submit button])
 
-        LS([fa:fa-user System]) --- childLS_1([receive user credentials])
-        LS([fa:fa-user System]) --- childLS_2([validate login request])
-        LS([fa:fa-user System]) --- childLS_3([fetch stored credentials])
-        LS([fa:fa-user System]) --- childLS_4([verify inputted credentials])
-        LS([fa:fa-user System]) --- childLS_5([generate authentication token])
+        LS([fa:fa-user Login System]) --- childLS_1([receive user credentials])
+        LS([fa:fa-user Login System]) --- childLS_2([validate login request])
+        LS([fa:fa-user Login System]) --- childLS_3([fetch stored credentials])
+        LS([fa:fa-user Login System]) --- childLS_4([verify inputted credentials])
+        LS([fa:fa-user Login System]) --- childLS_5([generate authentication token])
     end
 
     subgraph notification system
@@ -38,9 +40,9 @@ graph LR
     subgraph reward center
         style RC fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        RC([fa:fa-user User]) --- childRC_2([browse loyalty program list])
-        RC([fa:fa-user User]) --- childRC_3([see current points])
-        RC([fa:fa-user User]) --- childRC_4([open credit transfer form of a program])
+        RC([fa:fa-user Bank App User]) --- childRC_2([browse loyalty program list])
+        RC([fa:fa-user Bank App User]) --- childRC_3([see current points])
+        RC([fa:fa-user Bank App User]) --- childRC_4([open credit transfer form of a program])
 
         style LPM fill-opacity:0, stroke-opacity:0;
         direction LR  %%
@@ -48,6 +50,8 @@ graph LR
         LPM([fa:fa-user Reward Center System]) --- childLPM_2([display loyalty program rates])
         LPM([fa:fa-user Reward Center System]) --- childLPM_3([display loyalty program description])
         LPM([fa:fa-user Reward Center System]) --- childLPM_4([display loyalty program information links])
+        LPM([fa:fa-user Reward Center System]) --- childLPM_5([query credit transfer form API])
+
 
         
     end
@@ -55,11 +59,15 @@ graph LR
     subgraph credit transfer form
 
         style PTC fill-opacity:0, stroke-opacity:0;
+        style CF fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        PTC([fa:fa-user User]) --- childPTC_1([make point transactions])
-        PTC([fa:fa-user User]) --- childPTC_2([access loyalty program rates])
-        PTC([fa:fa-user User]) --- childPTC_3([read loyalty program description])
-        PTC([fa:fa-user User]) --- childPTC_4([press loyalty program information links])
+        PTC([fa:fa-user Bank App User]) --- childPTC_1([make point transactions])
+        PTC([fa:fa-user Bank App User]) --- childPTC_2([submit membership details])
+
+        CF([fa:fa-user Form System]) --- childCF_1([receive membership credentials])
+        CF([fa:fa-user Form System]) --- childCF_3([fetch stored membership credentials])
+        CF([fa:fa-user Form System]) --- childCF_2([query TransferConnect API])
+        CF([fa:fa-user Form System]) --- childCF_4([post transactions])
     end
 
     subgraph loyalty program
@@ -70,11 +78,12 @@ graph LR
         style LP_D fill-opacity:0, stroke-opacity:0;
         direction LR  %%
         LP_A([fa:fa-user Bank App]) --- childLP_1([request loyalty program details])
-        LP_B([fa:fa-user Ascenda Administrator]) --- childLP_2([request loyalty program information from database])
-        LP_C([fa:fa-user Database]) --- childLP_C1([receive loyalty program details from bank])
-        LP_C([fa:fa-user Database]) --- childLP_C2([update loyalty program details])
-        LP_C([fa:fa-user Database]) --- childLP_C3([send requested information to bank app])
-        LP_D([fa:fa-user Client Bank]) --- childLP_4([provide partnership loyalty program details])
+        LP_B([fa:fa-user Ascenda Administrator]) --- childLP_B1([request loyalty program information and bank point exchange rates from database])
+        LP_B([fa:fa-user Ascenda Administrator]) --- childLP_B2([parse information to Bank App])
+        LP_C([fa:fa-user Database System]) --- childLP_C1([receive loyalty program details and bank point exchange rates from loyalty program providers ])
+        LP_C([fa:fa-user Database System]) --- childLP_C2([update loyalty program details and bank point exchange rates])
+        LP_C([fa:fa-user Database System]) --- childLP_C3([send requested information to TransferConnect app])
+        LP_D([fa:fa-user Client Bank]) --- childLP_4([provide partnership loyalty program details and bank point exchange rates])
     end
 
 
