@@ -16,25 +16,31 @@ graph LR
     subgraph login
         style LU fill-opacity:0, stroke-opacity:0;
         style LS fill-opacity:0, stroke-opacity:0;
+        style LI fill-opacity:0, stroke-opacity:0;
         direction LR  %%
         LU([fa:fa-user Bank App User]) --- childLU_1([enter username])
         LU([fa:fa-user Bank App User]) --- childLU_2([enter password])
         LU([fa:fa-user Bank App User]) --- childLU_3([press submit button])
 
-        LS([fa:fa-user Login System]) --- childLS_1([receive user credentials])
-        LS([fa:fa-user Login System]) --- childLS_2([validate login request])
-        LS([fa:fa-user Login System]) --- childLS_3([fetch stored credentials])
-        LS([fa:fa-user Login System]) --- childLS_4([verify inputted credentials])
-        LS([fa:fa-user Login System]) --- childLS_5([generate authentication token])
+        LI([fa:fa-user Login Interface]) --- childLI_1([display username input field])
+        LI([fa:fa-user Login Interface]) --- childLI_2([display password input field])
+        LI([fa:fa-user Login Interface]) --- childLI_3([store user input])
+
+        LS([fa:fa-user Login Backend]) --- childLS_1([receive user credentials])
+        LS([fa:fa-user Login Backend]) --- childLS_2([validate login request])
+        LS([fa:fa-user Login Backend]) --- childLS_3([fetch stored credentials])
+        LS([fa:fa-user Login Backend]) --- childLS_4([verify inputted credentials])
+        LS([fa:fa-user Login Backend]) --- childLS_5([generate authentication token])
     end
 
     subgraph notification system
         style NS fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        NS([fa:fa-user Notification System]) --- childNS_4([receive transaction status update])
+        NS([fa:fa-user Notification System]) --- childNS_0([receive transaction status update])
         NS([fa:fa-user Notification System]) --- childNS_1([get transaction details])
         NS([fa:fa-user Notification System]) --- childNS_2([get user mode of notification])
-        NS([fa:fa-user Notification System]) --- childNS_3([send notification to user])
+        NS([fa:fa-user Notification System]) --- childNS_3([notify Bank App about transaction status])
+        NS([fa:fa-user Notification System]) --- childNS_4([notify registered bank customer about transaction status])
     end
 
     subgraph reward center
@@ -45,12 +51,15 @@ graph LR
         RC([fa:fa-user Bank App User]) --- childRC_4([open credit transfer form of a program])
 
         style LPM fill-opacity:0, stroke-opacity:0;
-        direction LR  %%
-        LPM([fa:fa-user Reward Center System]) --- childLPM_1([display loyalty program names])
-        LPM([fa:fa-user Reward Center System]) --- childLPM_2([display loyalty program rates])
-        LPM([fa:fa-user Reward Center System]) --- childLPM_3([display loyalty program description])
-        LPM([fa:fa-user Reward Center System]) --- childLPM_4([display loyalty program information links])
-        LPM([fa:fa-user Reward Center System]) --- childLPM_5([query credit transfer form API])
+        LPM([fa:fa-user Reward Center Interface]) --- childLPM_1([display loyalty program names])
+        LPM([fa:fa-user Reward Center Interface]) --- childLPM_2([display loyalty program rates])
+        LPM([fa:fa-user Reward Center Interface]) --- childLPM_3([display loyalty program description])
+        LPM([fa:fa-user Reward Center Interface]) --- childLPM_4([display loyalty program information links])
+        LPM([fa:fa-user Reward Center Interface]) --- childLPM_5([receive user input to open credit transfer form])
+
+        style RCS fill-opacity:0, stroke-opacity:0;
+        RCS([fa:fa-user Reward Center Backend]) --- childRCS_1([fetch loyalty program details from database])
+        RCS([fa:fa-user Reward Center Backend]) --- childRCS_2([query credit transfer form API])
 
 
         
@@ -59,15 +68,20 @@ graph LR
     subgraph credit transfer form
 
         style PTC fill-opacity:0, stroke-opacity:0;
-        style CF fill-opacity:0, stroke-opacity:0;
+        
         direction LR  %%
         PTC([fa:fa-user Bank App User]) --- childPTC_1([make point transactions])
         PTC([fa:fa-user Bank App User]) --- childPTC_2([submit membership details])
 
-        CF([fa:fa-user Form System]) --- childCF_1([receive membership credentials])
-        CF([fa:fa-user Form System]) --- childCF_3([fetch stored membership credentials])
-        CF([fa:fa-user Form System]) --- childCF_2([query TransferConnect API])
-        CF([fa:fa-user Form System]) --- childCF_4([post transactions])
+        style FI fill-opacity:0, stroke-opacity:0;
+        FI([fa:fa-user Form Interface]) --- childFI_1([display membership credentials input fields])
+        FI([fa:fa-user Form Interface]) --- childFI_3([allow user to submit form with submit button])
+
+        style CF fill-opacity:0, stroke-opacity:0;
+        CF([fa:fa-user Form Backend]) --- childCF_1([receive new membership credentials])
+        CF([fa:fa-user Form Backend]) --- childCF_2([fetch stored membership credentials if the customer had previously submitted them])
+        CF([fa:fa-user Form Backend]) --- childCF_4([post transactions])
+        CF([fa:fa-user Form Backend]) --- childCF_3([query TransferConnect API])
     end
 
     subgraph loyalty program
@@ -77,7 +91,7 @@ graph LR
         style LP_C fill-opacity:0, stroke-opacity:0;
         style LP_D fill-opacity:0, stroke-opacity:0;
         direction LR  %%
-        LP_A([fa:fa-user Bank App]) --- childLP_1([request loyalty program details])
+        LP_A([fa:fa-user Bank Application]) --- childLP_1([request loyalty program details])
         LP_B([fa:fa-user Ascenda Administrator]) --- childLP_B1([request loyalty program information and bank point exchange rates from database])
         LP_B([fa:fa-user Ascenda Administrator]) --- childLP_B2([parse information to Bank App])
         LP_C([fa:fa-user Database System]) --- childLP_C1([receive loyalty program details and bank point exchange rates from loyalty program providers ])

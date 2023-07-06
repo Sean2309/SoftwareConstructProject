@@ -8,7 +8,7 @@ class LoginPage extends Component {
         this.state = {
             email: '',
             password: '',
-            
+            authenticated: false
         };
     }
 
@@ -22,7 +22,7 @@ class LoginPage extends Component {
             console.log(response.data);
             if(response.data ==="Success"){
                 console.log("Redirect to specified page")
-                useNavigate('marketplace')
+                this.setState({ authenticated: true });
             }
           })
           .catch(error => {
