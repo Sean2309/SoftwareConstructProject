@@ -35,6 +35,6 @@ app.get('/update-loyalty-programs', (req, res) => {
       });
   });
 
-app.listen(config.PORT, () => {
+app.listen(3002, () => {
     console.log(`Server running on port ${config.PORT}`);
 })
