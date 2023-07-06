@@ -12,19 +12,30 @@ if (!fs.existsSync('accrual_files')) {
   fs.mkdirSync('accrual_files');
 }
 
+function getFormattedDate(subtractDay = false, format = "standard") {
+  const date = new Date();
+  if (subtractDay) {
+    date.setDate(date.getDate() - 1); // Subtract a day if requested
+  }
+  let month = date.getMonth() + 1; // getMonth() is zero-indexed
+  let day = date.getDate();
+
+  month = month < 10 ? '0' + month : month;
+  day = day < 10 ? '0' + day : day;
+
+  if (format === "compact") {
+    return `${date.getFullYear()}${month}${day}`;
+  } else { // "standard" format
+    return `${date.getFullYear()}-${month}-${day}`;
+  }
+}
+
 const collections = ["qflyers", "gojets", "testaccruals"]; // note please name your collection name in lowercase and add a "s" at the end
 
 const writeCollectionsToCsv = async () => {
   mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
-  const today = new Date();
-  today.setDate(today.getDate() - 1); // Subtract a day from today's date
-  let month = today.getMonth() + 1; // Month is zeroindexed
-  let day = today.getDate();
-  month = month < 10 ? '0' + month : month;
-  day = day < 10 ? '0' + day : day;
-
-  const stringToday = `${today.getFullYear()}-${month}-${day}`;
+  const stringToday = getFormattedDate(true);
 
   for (const collection of collections) {
     const Model = mongoose.model(collection, accrualFileFormSchema);
@@ -64,15 +75,7 @@ const uploadFilesToServer = async () => {
   Files.setBaseUrl('https://kaligo.files.com');
   Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
 
-  const date = new Date();
-  const year = date.getFullYear();
-  let month = date.getMonth() + 1; // getMonth() is zero-indexed
-  let day = date.getDate();
-
-  month = month < 10 ? '0' + month : month;
-  day = day < 10 ? '0' + day : day;
-
-  const formattedDate = year + '' + month + '' + day;
+  const formattedDate = getFormattedDate(false,"compact");
 
   for (const collection of collections) {
     if (!isBrowser()) {
