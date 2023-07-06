@@ -7,10 +7,6 @@ const File = require('files.com/lib/models/File').default;
 const { isBrowser } = require('files.com/lib/utils');
 const path = require('path');
 const fs = require('fs');
-const date = new Date();
-const year = date.getFullYear();
-let month = date.getMonth() + 1; // getMonth() is zero-indexed
-let day = date.getDate();
 
 if (!fs.existsSync('accrual_files')) {
   fs.mkdirSync('accrual_files');
@@ -21,11 +17,23 @@ const collections = ["qflyers", "gojets", "testaccruals"]; // note please name y
 const writeCollectionsToCsv = async () => {
   mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
+  const today = new Date();
+  today.setDate(today.getDate() - 1); // Subtract a day from today's date
+  let month = today.getMonth() + 1; // Month is zeroindexed
+  let day = today.getDate();
+  month = month < 10 ? '0' + month : month;
+  day = day < 10 ? '0' + day : day;
+
+  const stringToday = `${today.getFullYear()}-${month}-${day}`;
+
   for (const collection of collections) {
     const Model = mongoose.model(collection, accrualFileFormSchema);
 
     try {
-      const data = await Model.find({outcomeCode: {$exists: false}});
+      const data = await Model.find(
+        {outcomeCode: {$exists: false},
+        transferDate: stringToday} 
+        );
 
       console.log('Data retrieved from ' + collection + ':', data);
 
@@ -55,6 +63,12 @@ const writeCollectionsToCsv = async () => {
 const uploadFilesToServer = async () => {
   Files.setBaseUrl('https://kaligo.files.com');
   Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
+
+  const date = new Date();
+  const year = date.getFullYear();
+  let month = date.getMonth() + 1; // getMonth() is zero-indexed
+  let day = date.getDate();
+
   month = month < 10 ? '0' + month : month;
   day = day < 10 ? '0' + day : day;
 
