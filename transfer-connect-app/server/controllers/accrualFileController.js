@@ -55,7 +55,7 @@ const uploadFilesToServer = async () => {
   for (const collection of collections) {
     if (!isBrowser()) {
       try {
-        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_${collection}_20200812.csv`, path.join('accrual_files', `${collection}_out.csv`));
+        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/AL_ACCRUAL_${collection}_20200812.csv`, path.join('accrual_files', `${collection}_out.csv`));
         console.log('File uploaded successfully.');
       } catch (error) {
         console.error('An error occurred while uploading file for collection ' + collection + ':', error);
