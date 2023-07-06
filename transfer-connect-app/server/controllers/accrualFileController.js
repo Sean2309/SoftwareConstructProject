@@ -7,6 +7,10 @@ const File = require('files.com/lib/models/File').default;
 const { isBrowser } = require('files.com/lib/utils');
 const path = require('path');
 const fs = require('fs');
+const date = new Date();
+const year = date.getFullYear();
+let month = date.getMonth() + 1; // getMonth() is zero-indexed
+let day = date.getDate();
 
 if (!fs.existsSync('accrual_files')) {
   fs.mkdirSync('accrual_files');
@@ -51,11 +55,15 @@ const writeCollectionsToCsv = async () => {
 const uploadFilesToServer = async () => {
   Files.setBaseUrl('https://kaligo.files.com');
   Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
+  month = month < 10 ? '0' + month : month;
+  day = day < 10 ? '0' + day : day;
+
+  const formattedDate = year + '' + month + '' + day;
 
   for (const collection of collections) {
     if (!isBrowser()) {
       try {
-        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/AL_ACCRUAL_${collection}_20200812.csv`, path.join('accrual_files', `${collection}_out.csv`));
+        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/AL_ACCRUAL_${collection}_${formattedDate}.csv`, path.join('accrual_files', `${collection}_out.csv`));
         console.log('File uploaded successfully.');
       } catch (error) {
         console.error('An error occurred while uploading file for collection ' + collection + ':', error);
