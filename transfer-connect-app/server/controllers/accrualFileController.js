@@ -8,21 +8,6 @@ const { isBrowser } = require('files.com/lib/utils');
 const path = require('path');
 const fs = require('fs');
 
-/*
-TODO:
-We have an array of collections, each collection is pointing to 1 loyalty program,
-const collections = ["QFlyer", "Gojet", ...]
-
-So for each collection, .find() all the transactions for that loyalty program, 
-consolidate and then upload to sftp server
-
-Do maybe like a loop?
-
-for (loyaltyProgram of collections) {
-  retrieveAndWriteToCsv(loyaltyProgram);
-}
-*/
-
 if (!fs.existsSync('accrual_files')) {
   fs.mkdirSync('accrual_files');
 }
@@ -36,7 +21,7 @@ const writeCollectionsToCsv = async () => {
     const Model = mongoose.model(collection, accrualFileFormSchema);
 
     try {
-      const data = await Model.find();
+      const data = await Model.find({outcomeCode: {$exists: false}});
 
       console.log('Data retrieved from ' + collection + ':', data);
 
@@ -70,7 +55,7 @@ const uploadFilesToServer = async () => {
   for (const collection of collections) {
     if (!isBrowser()) {
       try {
-        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_${collection}_20200812.txt`, path.join('accrual_files', `${collection}_out.csv`));
+        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/AL_ACCRUAL_${collection}_20200812.csv`, path.join('accrual_files', `${collection}_out.csv`));
         console.log('File uploaded successfully.');
       } catch (error) {
         console.error('An error occurred while uploading file for collection ' + collection + ':', error);
