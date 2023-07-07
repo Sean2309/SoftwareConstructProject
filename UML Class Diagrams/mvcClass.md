@@ -159,7 +159,7 @@ class QueryController{
 ```mermaid
 classDiagram
 class transactionEnquiryController
-transactionEnquiryController -- transactionEnquiryModel
+transactionEnquiryController "1" --> "*" transactionEnquiryModel
 
 
 class transactionEnquiryController{
@@ -183,8 +183,8 @@ class transactionEnquiryModel{
 
 ```mermaid
 classDiagram
-    index -- AccrualController
-    AccrualController -- TransactionModel
+    index "1"--> "1" AccrualController
+    AccrualController "1" --> "*" TransactionModel
 
     class index{
         queryFromDBandUpload: void
@@ -210,12 +210,10 @@ classDiagram
 ```
 # TransferFile RETRIEVING API
 
-transferconnect receive handback > update outcomecode to each transaction stored in db
-
 
 ```mermaid
 classDiagram
-HandbackController -- ConfirmationModel
+HandbackController "1" --> "*" ConfirmationModel
 
 class HandbackController{
     -confirmedTransactions: List<<list>ConfirmationModel>
