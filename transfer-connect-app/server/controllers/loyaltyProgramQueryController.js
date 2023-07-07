@@ -30,18 +30,19 @@ const currencyRateModel = require('../models/currencyRateModel');
 
   class LoyaltyProgramQueryController {
     getLoyaltyPrograms = async (request, response, appName) => {
-      console.log(`getLoyaltyPrograms Method is running. appName parameter is` , appName);
+      
+      console.log(`getLoyaltyPrograms() reads the appName:` , appName);
       
       try {
       
         const loyaltyProgramsPromise = loyaltyProgramQueryModel.find(); // Fetch all oyaltyProgramProviders
 
         // Fetch the document correspond to the appName, which contains all loyalty programs and currency rates
-        const currencyRates_LPPsPromise = currencyRateModel.find({appName:appName});
+        const currencyRatesPromise = currencyRateModel.find({appName:appName});
   
         const [loyaltyPrograms, currencyRates_LPPs] = await Promise.all([
           loyaltyProgramsPromise,
-          currencyRates_LPPsPromise
+          currencyRatesPromise
         ]);
         
         const programRates ={};
@@ -57,6 +58,7 @@ const currencyRateModel = require('../models/currencyRateModel');
         });
 
         console.log("########")
+        console.log(`Extracted Loyalty Program Providers and exchange rates`)
         console.log(programRates)
         console.log("########")
 
