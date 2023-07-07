@@ -192,7 +192,6 @@ classDiagram
 
     class AccrualController{
         -collections: List<<list>String>
-        -getFormattedDate(subtractDay: boolean, format: String): String
         -writeCollectionsToCsv(): void
         -uploadFilesToServer(): void
         -queryFromDBandUpload(): void
