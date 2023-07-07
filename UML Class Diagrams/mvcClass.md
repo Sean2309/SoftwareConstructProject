@@ -158,14 +158,39 @@ class QueryController{
 
 ```mermaid
 classDiagram
-class transactionEnquiryController
-transactionEnquiryController "1" --> "*" transactionEnquiryModel
+class transactionEnquiryController_TC
+transactionEnquiryController_TC "1" --> "*" transactionEnquiryModel
 
 
-class transactionEnquiryController{
+class transactionEnquiryController_TC{
     - transactionSchema: transactionEnquiryModel
     - processRoute()
     - getOutcomeCode()
+}
+
+class transactionEnquiryModel{
+    - UserNumber: String
+    - membershipId: String,
+    - membershipName: String,
+    - transferDate: String,
+    - transferAmount: Number,
+    - referenceNumber: String,
+    - partnerCode: String,
+    - outcomeCode: String
+}
+```
+```mermaid
+classDiagram
+class transactionEnquiryController_BA
+transactionEnquiryController_BA "1" --> "*" transactionEnquiryModel
+
+
+class transactionEnquiryController_BA{
+    - transactionSchema: transactionEnquiryModel
+    - startEnquiry()
+    - getReferenceNumbers()
+    - makeApiRequest()
+    - updateOutcomeCodes()
 }
 
 class transactionEnquiryModel{
