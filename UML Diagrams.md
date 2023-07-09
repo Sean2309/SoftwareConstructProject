@@ -47,7 +47,7 @@ sequenceDiagram
 ```mermaid
 classDiagram
 class transactionEnquiryController_TC
-transactionEnquiryController_TC -- transactionEnquiryModel
+transactionEnquiryController_TC"1" -->"*"transactionEnquiryModel
 
 
 class transactionEnquiryController_TC{
@@ -70,7 +70,7 @@ class transactionEnquiryModel{
 ```Mermaid
 classDiagram
 class transactionEnquiryController_BA
-transactionEnquiryController_BA -- transactionEnquiryModel
+transactionEnquiryController_BA"1" --> "*"transactionEnquiryModel
 
 
 class transactionEnquiryController_BA{
