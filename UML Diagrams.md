@@ -2,9 +2,9 @@
 classDiagram
 class NotifController
 <<abstract>> NotifController
-NotifController <-- MessageNotif: Inheritance
-NotifController <-- EmailNotif: Inheritance
-NotifController <-- InAppNotif: Inheritance
+NotifController"1" --> "*"MessageNotif: Inheritance
+NotifController"1" --> "*"EmailNotif: Inheritance
+NotifController"1" --> "*"InAppNotif: Inheritance
 
 
 class NotifController{
@@ -111,9 +111,4 @@ sequenceDiagram
     Bank-App -) Bank-App: updateOutcomeCodes()
     deactivate Bank-App
    
-
-```
-
-
-
 
