@@ -7,16 +7,15 @@ const File = require('files.com/lib/models/File').default;
 const { isBrowser } = require('files.com/lib/utils');
 const path = require('path');
 const fs = require('fs');
+const csvParser = require('csv-parser');
 
 if (!fs.existsSync('accrual_files')) {
   fs.mkdirSync('accrual_files');
 }
 
-function getFormattedDate(subtractDay = false, format = "standard") {
+function getFormattedDate(format = "standard") {
   const date = new Date();
-  if (subtractDay) {
-    date.setDate(date.getDate() - 1); // Subtract a day if requested
-  }
+  date.setDate(date.getDate() - 1); // Subtract a day if requested
   let month = date.getMonth() + 1; // getMonth() is zero-indexed
   let day = date.getDate();
 
@@ -35,7 +34,7 @@ const collections = ["qflyers", "gojets", "testaccruals"]; // note please name y
 const writeCollectionsToCsv = async () => {
   mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 
-  const stringToday = getFormattedDate(true);
+  const stringToday = getFormattedDate();
 
   for (const collection of collections) {
     const Model = mongoose.model(collection, accrualFileFormSchema);
@@ -75,13 +74,31 @@ const uploadFilesToServer = async () => {
   Files.setBaseUrl('https://kaligo.files.com');
   Files.setApiKey('d823bcf8852f7259262f425a839a05f88f51fa57e9cddb8c3d1493d10c04192e');
 
-  const formattedDate = getFormattedDate(false,"compact");
+  const formattedDate = getFormattedDate("compact");
 
   for (const collection of collections) {
+
+    const csvFilePath = path.join('accrual_files', `${collection}_out.csv`);
+    
     if (!isBrowser()) {
       try {
-        await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/AL_ACCRUAL_${collection}_${formattedDate}.csv`, path.join('accrual_files', `${collection}_out.csv`));
-        console.log('File uploaded successfully.');
+
+        const csvData = [];
+        fs.createReadStream(csvFilePath)
+          .pipe(csvParser())
+          .on('data', (row) => {
+            csvData.push(row);
+          })
+          .on('end', async () => {
+            console.log('CSV file successfully processed');
+
+            const partnerCodes = [...new Set(csvData.map(row => row['Partner code']))];
+
+            for (const partnerCode of partnerCodes) {
+              await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/${partnerCode}_ACCRUAL_${collection}_${formattedDate}.csv`, path.join('accrual_files', `${collection}_out.csv`));
+              console.log('File uploaded successfully.');
+            }
+          });
       } catch (error) {
         console.error('An error occurred while uploading file for collection ' + collection + ':', error);
       }
