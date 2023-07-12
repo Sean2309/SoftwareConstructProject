@@ -41,27 +41,37 @@ const writeCollectionsToCsv = async () => {
 
     try {
       const data = await Model.find(
-        {outcomeCode: {$exists: false},
-        transferDate: stringToday} 
-        );
+        {
+          outcomeCode: { $exists: false },
+          transferDate: stringToday
+        }
+      );
 
       console.log('Data retrieved from ' + collection + ':', data);
 
-      const csvWriter = createCsvWriter({
-        path: path.join('accrual_files',`${collection}_out.csv`),
-        header: [
-          {id: 'membershipId', title: 'Membership ID'},
-          {id: 'membershipName', title: 'Membership name'},
-          {id: 'transferDate', title: 'Transfer date'},
-          {id: 'transferAmount', title: 'Transfer Amount'},
-          {id: 'referenceNumber', title: 'Reference number'},
-          {id: 'partnerCode', title: 'Partner code'}
-        ]
-      });
+      // Group by partnerCode
+      const groups = data.reduce((acc, doc) => {
+        (acc[doc.partnerCode] = acc[doc.partnerCode] || []).push(doc);
+        return acc;
+      }, {});
 
-      await csvWriter.writeRecords(data);
+      for (const partnerCode in groups) {
+        const csvWriter = createCsvWriter({
+          path: path.join('accrual_files', `${collection}_${partnerCode}.csv`),
+          header: [
+            { id: 'membershipId', title: 'Membership ID' },
+            { id: 'membershipName', title: 'Membership name' },
+            { id: 'transferDate', title: 'Transfer date' },
+            { id: 'transferAmount', title: 'Transfer Amount' },
+            { id: 'referenceNumber', title: 'Reference number' },
+            { id: 'partnerCode', title: 'Partner code' }
+          ]
+        });
 
-      console.log(`Data written to ${collection}_out.csv.`);
+        await csvWriter.writeRecords(groups[partnerCode]);
+
+        console.log(`Data written to ${partnerCode}.csv`);
+      }
     } catch (error) {
       console.error('An error occurred while handling collection ' + collection + ':', error);
     }
@@ -76,34 +86,26 @@ const uploadFilesToServer = async () => {
 
   const formattedDate = getFormattedDate("compact");
 
+  // Loop through collections
   for (const collection of collections) {
+    // Loop through partner codes within each collection
+    const partnerCodes = fs.readdirSync('accrual_files')
+      .filter(file => file.startsWith(`${collection}_`))
+      .map(file => file.replace(`${collection}_`, '').replace('.csv', ''));
 
-    const csvFilePath = path.join('accrual_files', `${collection}_out.csv`);
-    
-    if (!isBrowser()) {
-      try {
+    for (const partnerCode of partnerCodes) {
+      if (!isBrowser()) {
+        try {
+          const csvFilePath = path.join('accrual_files', `${collection}_${partnerCode}.csv`);
 
-        const csvData = [];
-        fs.createReadStream(csvFilePath)
-          .pipe(csvParser())
-          .on('data', (row) => {
-            csvData.push(row);
-          })
-          .on('end', async () => {
-            console.log('CSV file successfully processed');
-
-            const partnerCodes = [...new Set(csvData.map(row => row['Partner code']))];
-
-            for (const partnerCode of partnerCodes) {
-              await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/${partnerCode}_ACCRUAL_${collection}_${formattedDate}.csv`, path.join('accrual_files', `${collection}_out.csv`));
-              console.log('File uploaded successfully.');
-            }
-          });
-      } catch (error) {
-        console.error('An error occurred while uploading file for collection ' + collection + ':', error);
+          await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/${partnerCode}_ACCRUAL_${formattedDate}.csv`, csvFilePath);
+          console.log('File uploaded successfully.');
+        } catch (error) {
+          console.error('An error occurred while uploading file for collection ' + collection + ':', error);
+        }
+      } else {
+        console.log('File upload skipped because it is running in a browser environment.');
       }
-    } else {
-      console.log('File upload skipped because it is running in a browser environment.');
     }
   }
 }
