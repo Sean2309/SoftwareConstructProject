@@ -98,7 +98,7 @@ const uploadFilesToServer = async () => {
         try {
           const csvFilePath = path.join('accrual_files', `${collection}_${partnerCode}.csv`);
 
-          await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${formattedDate}/${collection}/${partnerCode}_ACCRUAL_${formattedDate}.csv`, csvFilePath);
+          await File.uploadFile(`/transfer_connect_sutd_case_study_2023/c4i1/Accrual/${collection}/${formattedDate}/${partnerCode}_ACCRUAL_${formattedDate}.csv`, csvFilePath, {mkdir_parents: true});
           console.log('File uploaded successfully.');
         } catch (error) {
           console.error('An error occurred while uploading file for collection ' + collection + ':', error);
