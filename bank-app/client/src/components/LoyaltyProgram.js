@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TransferForm from './TransferForm';
+import '../css/loyalty-styles.css';
 
 class LoyaltyProgram extends Component {
 
@@ -9,7 +10,7 @@ class LoyaltyProgram extends Component {
         console.log(data);
 
         return (
-            <div style={loyaltyProgramStyle}>
+            <div className='loyalty-box'>
                 <h3>{data.programName}</h3>
                 <p>Description: {data.description}</p>
                 <p>Currency: {data.currencyName}</p>
@@ -30,12 +31,12 @@ class LoyaltyProgram extends Component {
 }
 
 // CSS style for the loyalty program box
-const loyaltyProgramStyle = {
-    border: '1px solid #ccc',
-    padding: '10px',
-    margin: '10px',
-    borderRadius: '5px',
-    backgroundColor: '#f9f9f9',
-};
+// const loyaltyProgramStyle = {
+//     border: '1px solid #ccc',
+//     padding: '10px',
+//     margin: '10px',
+//     borderRadius: '5px',
+//     backgroundColor: '#f9f9f9',
+// };
 
 export default LoyaltyProgram;

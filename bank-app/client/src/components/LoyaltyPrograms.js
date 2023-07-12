@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import LoyaltyProgram from './LoyaltyProgram';
+import '../css/loyalty-styles.css';
 
 class LoyaltyPrograms extends Component {
     constructor(props) {
@@ -40,7 +41,8 @@ class LoyaltyPrograms extends Component {
 
     render() {
         return (
-            <div>
+            <div className='marketplace-page-bg'>
+                {/* apply style here */}
                 <h2>Loyalty Programs</h2>
                 {this.renderLoyaltyPrograms()}
             </div>
